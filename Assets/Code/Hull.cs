@@ -46,16 +46,16 @@ public class Hull : MonoBehaviour
 		partialMesh.Vertices = points.Select(p => p.Position).ToList();
 		partialMesh.Colors = points.Select(p => new Color(p.Weight, p.Weight, p.Weight)).ToList();
 		partialMesh.Indices = new List<int>();
-		for (int i = 0; i < points.Count - 2; i++)
+		for (int i = 0; i < points.Count; i++)
 		{
 			partialMesh.Indices.Add(i);
-			partialMesh.Indices.Add(i + 1);
-			partialMesh.Indices.Add(i + 2);
+			partialMesh.Indices.Add((i + 1) % points.Count);
+			partialMesh.Indices.Add((i + 2) % points.Count);
 
 			// Double sided, bitches
 			// FIXME: Nope.
-			partialMesh.Indices.Add(i + 2);
-			partialMesh.Indices.Add(i + 1);
+			partialMesh.Indices.Add((i + 2) % points.Count);
+			partialMesh.Indices.Add((i + 1) % points.Count);
 			partialMesh.Indices.Add(i);
 		}
 
