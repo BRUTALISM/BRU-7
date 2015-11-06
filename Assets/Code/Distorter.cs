@@ -15,8 +15,10 @@ public class Distorter : MonoBehaviour
 
 	#region Private fields
 
-	CompositeDisposable disposables = new CompositeDisposable();
-	ReplaySubject<List<Point>> groupedPoints = new ReplaySubject<List<Point>>();
+	private CompositeDisposable disposables = new CompositeDisposable();
+	private ReplaySubject<List<Point>> groupedPoints = new ReplaySubject<List<Point>>();
+
+	private List<Point> currentGroup = new List<Point>();
 
 	#endregion
 
@@ -38,7 +40,17 @@ public class Distorter : MonoBehaviour
 
 	private void AddToGroup(Point newPoint)
 	{
-		Debug.Log(newPoint);
+		// TODO: Implement distortion.
+
+		// TODO: Implement smarter grouping.
+
+		if (currentGroup.Count == 4)
+		{
+			groupedPoints.OnNext(currentGroup);
+			currentGroup = new List<Point>();
+		}
+
+		currentGroup.Add(newPoint);
 	}
 
 	#endregion

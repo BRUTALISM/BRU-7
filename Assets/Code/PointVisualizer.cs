@@ -25,16 +25,19 @@ public class PointVisualizer : MonoBehaviour
 
 	void OnEnable()
 	{
-		GetComponent<CloudGenerator>().Points.Subscribe(point =>
+		GetComponent<Mirror>().MirroredPoints.Subscribe(points =>
 		{
-			var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			cube.transform.position = point.Position;
-			cube.GetComponent<MeshRenderer>().sharedMaterial = PointMaterial;
-			cube.transform.localScale = Vector3.one * 0.2f;
-
-			cube.transform.SetParent(this.transform);
-
-			visualizations.Add(cube);
+			foreach (var point in points)
+			{
+				var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.transform.position = point.Position;
+				cube.GetComponent<MeshRenderer>().sharedMaterial = PointMaterial;
+				cube.transform.localScale = Vector3.one * 0.2f;
+				
+				cube.transform.SetParent(this.transform);
+				
+				visualizations.Add(cube);
+			}
 		}).AddTo(disposables);
 	}
 
