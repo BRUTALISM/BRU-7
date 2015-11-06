@@ -40,12 +40,13 @@ public class Distorter : MonoBehaviour
 
 	private void AddToGroup(Point newPoint)
 	{
-		// TODO: Implement distortion.
 
-		// TODO: Implement smarter grouping.
+		// TODO: Implement smarter grouping (add to nearest group?)
 
 		if (currentGroup.Count == 4)
 		{
+			// TODO: Implement distortion and add distorted points to the group.
+
 			groupedPoints.OnNext(currentGroup);
 			currentGroup = new List<Point>();
 		}

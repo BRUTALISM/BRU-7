@@ -10,6 +10,7 @@ public class CloudGenerator : MonoBehaviour
 	public Axis AxisOfSymmetry = Axis.YZ;
 	public float Extent = 100f;
 	public float StartingPointWeight = 1f;
+	public float NewPointInterval = 0.1f;
 
 	#endregion
 
@@ -34,10 +35,10 @@ public class CloudGenerator : MonoBehaviour
 	{
 		GenerateCloud();
 
-//		Observable.EveryUpdate().Where(_ => Input.GetMouseButtonDown(0)).Subscribe((_) =>
-//		{
-//			points.OnNext(NewRandomPoint());
-//		}).AddTo(disposables);
+		Observable.Interval(System.TimeSpan.FromSeconds(NewPointInterval)).Subscribe((_) =>
+		{
+			points.OnNext(NewRandomPoint());
+		}).AddTo(disposables);
 	}
 
 	void OnDisable()

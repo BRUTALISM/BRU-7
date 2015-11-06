@@ -17,7 +17,6 @@ public class Mirror : MonoBehaviour
 
 	private CompositeDisposable disposables = new CompositeDisposable();
 	private ReplaySubject<List<Point>> mirroredPoints = new ReplaySubject<List<Point>>();
-	private CloudGenerator.Axis mirrorAxis;
 
 	#endregion
 
@@ -26,7 +25,6 @@ public class Mirror : MonoBehaviour
 	void OnEnable()
 	{
 		GetComponent<Distorter>().GroupedPoints.Subscribe(MirrorPoints).AddTo(disposables);
-		mirrorAxis = GetComponent<CloudGenerator>().AxisOfSymmetry;
 	}
 
 	void OnDisable()
@@ -40,6 +38,8 @@ public class Mirror : MonoBehaviour
 
 	private void MirrorPoints(List<Point> points)
 	{
+		var mirrorAxis = GetComponent<CloudGenerator>().AxisOfSymmetry;
+
 		// Create a new list of mirrored points
 		var mirrored = new List<Point>(points.Count);
 		foreach (var point in points)
