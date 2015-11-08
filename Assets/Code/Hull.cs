@@ -27,8 +27,7 @@ public class Hull : MonoBehaviour
 
 	void Start()
 	{
-		// TODO: Perform QuickHull on a separate thread, then return back on main with the results.
-		GetComponent<Mirror>().MirroredPoints.Subscribe(points => hulled.OnNext(CalculateConvexHull(points))).AddTo(this);
+		GetComponent<Mirror>().MirroredPoints.Subscribe(points => HullCalculation(points)).AddTo(this);
 	}
 
 	#endregion
@@ -70,6 +69,12 @@ public class Hull : MonoBehaviour
 			if (points == null) throw new System.InvalidOperationException("points is null");
 			if (points.Count != 3) throw new System.InvalidOperationException("points.Count is not 3");
 		}
+	}
+
+	private void HullCalculation(List<Point> points)
+	{
+		// Perform QuickHull on a separate thread, then return back on main with the results
+		Observable.Start(() => CalculateConvexHull(points)).ObserveOnMainThread().Subscribe(hulled.OnNext).AddTo(this);
 	}
 
 	private PartialMesh CalculateConvexHull(List<Point> points)
