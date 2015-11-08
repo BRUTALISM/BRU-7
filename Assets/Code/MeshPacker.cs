@@ -26,7 +26,7 @@ public class MeshPacker : MonoBehaviour
 
 	void Start()
 	{
-		GetComponent<Hull>().Hulled.Subscribe(PackMesh).AddTo(this);
+		GetComponent<Hull>().HulledPartialMeshes.Subscribe(PackMesh).AddTo(this);
 	}
 
 	#endregion
@@ -68,7 +68,7 @@ public class MeshPacker : MonoBehaviour
 			meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
 			meshGameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
-			meshGameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
+//			meshGameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
 
 			if (onEachChild != null) onEachChild(meshGameObject);
 
