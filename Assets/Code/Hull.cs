@@ -16,22 +16,15 @@ public class Hull : MonoBehaviour
 
 	#region Private fields
 
-	private CompositeDisposable disposables = new CompositeDisposable();
-
-	private ReplaySubject<PartialMesh> hulled = new ReplaySubject<PartialMesh>();
+	private Subject<PartialMesh> hulled = new Subject<PartialMesh>();
 
 	#endregion
 
 	#region Unity methods
 
-	void OnEnable()
+	void Start()
 	{
-		GetComponent<Mirror>().MirroredPoints.Subscribe(CalculateConvexHull).AddTo(disposables);
-	}
-
-	void OnDisable()
-	{
-		disposables.Dispose();
+		GetComponent<Mirror>().MirroredPoints.Subscribe(CalculateConvexHull).AddTo(this);
 	}
 
 	#endregion

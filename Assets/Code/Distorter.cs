@@ -15,8 +15,7 @@ public class Distorter : MonoBehaviour
 
 	#region Private fields
 
-	private CompositeDisposable disposables = new CompositeDisposable();
-	private ReplaySubject<List<Point>> groupedPoints = new ReplaySubject<List<Point>>();
+	private Subject<List<Point>> groupedPoints = new Subject<List<Point>>();
 
 	private List<Point> currentGroup = new List<Point>();
 
@@ -24,14 +23,9 @@ public class Distorter : MonoBehaviour
 
 	#region Unity methods
 
-	void OnEnable()
+	void Start()
 	{
-		GetComponent<CloudGenerator>().Points.Subscribe(AddToGroup).AddTo(disposables);
-	}
-
-	void OnDisable()
-	{
-		disposables.Dispose();
+		GetComponent<CloudGenerator>().Points.Subscribe(AddToGroup).AddTo(this);
 	}
 
 	#endregion

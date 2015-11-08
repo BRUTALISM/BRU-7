@@ -16,7 +16,6 @@ public class MeshPacker : MonoBehaviour
 
 	#region Private fields
 
-	private CompositeDisposable disposables = new CompositeDisposable();
 	private Queue<PartialMesh> partialMeshes = new Queue<PartialMesh>();
 
 	private List<GameObject> children = null;
@@ -25,14 +24,9 @@ public class MeshPacker : MonoBehaviour
 
 	#region Unity methods
 
-	void OnEnable()
+	void Start()
 	{
-		GetComponent<Hull>().Hulled.Subscribe(PackMesh).AddTo(disposables);
-	}
-
-	void OnDisable()
-	{
-		disposables.Dispose();
+		GetComponent<Hull>().Hulled.Subscribe(PackMesh).AddTo(this);
 	}
 
 	#endregion

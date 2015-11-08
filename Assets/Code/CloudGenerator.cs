@@ -24,26 +24,20 @@ public class CloudGenerator : MonoBehaviour
 
 	#region Private fields
 
-	private ReplaySubject<Point> points = new ReplaySubject<Point>();
-	private CompositeDisposable disposables = new CompositeDisposable();
+	private Subject<Point> points = new Subject<Point>();
 
 	#endregion
 
 	#region Unity methods
 
-	void OnEnable()
+	void Start()
 	{
 		GenerateCloud();
 
 		Observable.Interval(System.TimeSpan.FromSeconds(NewPointInterval)).Subscribe((_) =>
 		{
 			points.OnNext(NewRandomPoint());
-		}).AddTo(disposables);
-	}
-
-	void OnDisable()
-	{
-		disposables.Dispose();
+		}).AddTo(this);
 	}
 
 	#endregion

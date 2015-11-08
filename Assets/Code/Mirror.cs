@@ -15,21 +15,15 @@ public class Mirror : MonoBehaviour
 
 	#region Private fields
 
-	private CompositeDisposable disposables = new CompositeDisposable();
-	private ReplaySubject<List<Point>> mirroredPoints = new ReplaySubject<List<Point>>();
+	private Subject<List<Point>> mirroredPoints = new Subject<List<Point>>();
 
 	#endregion
 
 	#region Unity methods
 
-	void OnEnable()
+	void Start()
 	{
-		GetComponent<Distorter>().GroupedPoints.Subscribe(MirrorPoints).AddTo(disposables);
-	}
-
-	void OnDisable()
-	{
-		disposables.Dispose();
+		GetComponent<Distorter>().GroupedPoints.Subscribe(MirrorPoints).AddTo(this);
 	}
 
 	#endregion
