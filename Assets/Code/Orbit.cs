@@ -23,7 +23,11 @@ public class Orbit : MonoBehaviour
 
 	void Start()
 	{
+		#if UNITY_EDITOR
+		rotationOffset = Quaternion.identity;
+		#else
 		rotationOffset = Quaternion.Euler(90f, 0f, 0f);
+		#endif
 		distanceFromOrigin = transform.position.magnitude;
 	}
 
