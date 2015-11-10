@@ -152,10 +152,10 @@ public class Hull : MonoBehaviour
 
 	private PartialMesh CalculateConvexHull(List<Point> points)
 	{
+		if (points.Count < 4) throw new System.ArgumentException("Hull can be calculated for 4 or more points, received " + points.Count);
+
 		var hullTriangles = new List<Triangle>();
 		var remainingPoints = new HashSet<TrianglePoint>(points.Select(p => new TrianglePoint(p)));
-
-		if (points.Count < 4) throw new System.ArgumentException("Hull can be calculated for 4 or more points, received " + points.Count);
 
 		// Find points with minimum and maximum Y and Z coordinates (could have also been X, doesn't matter, we need two)
 		TrianglePoint yMin = null;
@@ -238,7 +238,6 @@ public class Hull : MonoBehaviour
 				// Remove all triangles which are facing this point
 				var seers = new List<Triangle>();
 				foreach (var triangle in hullTriangles) if (triangle.IsFacingPoint(furthestPoint)) seers.Add(triangle);
-				Assert.IsTrue(seers.Count >= 1);
 				var pointsFromRemovedTriangles = new HashSet<TrianglePoint>();
 				foreach (var triangleToBeRemoved in seers)
 				{
@@ -284,16 +283,12 @@ public class Hull : MonoBehaviour
 			}
 		}
 
-		Assert.AreEqual(0, remainingPoints.Count);
-
 		return TrianglesToPartialMesh(hullTriangles);
 	}
 
-	private List<Triangle> SewPointToHoleEdges(Point point, IEnumerable<TrianglePoint> edgePoints)
+	private List<Triangle> SewPointToHoleEdges(TrianglePoint topPoint, IEnumerable<TrianglePoint> edgePoints)
 	{
 		var triangles = new List<Triangle>();
-
-		var topPoint = new TrianglePoint(point);
 
 		var startPoint = edgePoints.ElementAt(0);
 		var currentPoint = startPoint;
@@ -303,7 +298,7 @@ public class Hull : MonoBehaviour
 		do
 		{
 			var currentPointNeighbours = currentPoint.GetSinglyLinkedNeighbours();
-			Assert.IsTrue(currentPointNeighbours.Count == 2);
+			Assert.AreEqual(2, currentPointNeighbours.Count, "singly linked neighbour count is 2");
 
 			// Check that we're always moving in the same direction
 			if (currentPointNeighbours[0] == previousPoint) nextPoint = currentPointNeighbours[1];

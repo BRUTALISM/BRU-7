@@ -37,7 +37,7 @@ public class Distorter : MonoBehaviour
 
 		// TODO: Implement smarter grouping (add to nearest group?)
 
-		if (currentGroup.Count == 6)
+		if (currentGroup.Count == 8)
 		{
 			// TODO: Implement distortion and add distorted points to the group.
 

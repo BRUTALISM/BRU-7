@@ -112,7 +112,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 891532184}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 79fe830ce9c9e44b1bd6582fe296ed8d, type: 3}
   m_Name: 
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c67ebf723b2bc4216be11a0188c6df93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfPoints: 64
+  NumberOfPoints: 32
   AxisOfSymmetry: 2
   Extent: 26
   StartingPointWeight: 1
