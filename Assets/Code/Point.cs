@@ -8,25 +8,16 @@ public class Point : IPosition
 	public float Weight { get; private set; }
 
 	// IPosition impl
-	public Vector3 Position
-	{
-		get
-		{
-			return position;
-		}
-	}
+	public Vector3 Position { get; set; }
 
 	#endregion
 
 	#region Private fields
-
-	private Vector3 position;
-
 	#endregion
 
 	public Point(Vector3 position, float weight)
 	{
-		this.position = position;
+		Position = position;
 		this.Weight = Mathf.Clamp01(weight);
 	}
 }

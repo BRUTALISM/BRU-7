@@ -40,6 +40,27 @@ public class CloudGenerator : MonoBehaviour
 		}).AddTo(this);
 	}
 
+	#if UNITY_EDITOR
+	void OnDrawGizmos()
+	{
+		var gizmoDimensions = Vector3.zero;
+		switch (AxisOfSymmetry)
+		{
+			case Axis.XY:
+				gizmoDimensions = new Vector3(Extent, Extent, 0f);
+				break;
+			case Axis.XZ:
+				gizmoDimensions = new Vector3(Extent, 0f, Extent);
+				break;
+			case Axis.YZ:
+				gizmoDimensions = new Vector3(0f, Extent, Extent);
+				break;
+		}
+		Gizmos.color = Color.green;
+		Gizmos.DrawWireCube(transform.position, gizmoDimensions);
+	}
+	#endif
+
 	#endregion
 
 	#region Generation
