@@ -171,10 +171,9 @@ public class Hull : MonoBehaviour
 			if (zMax == null || point.Position.z > zMax.Position.z) zMax = point;
 		}
 
-		var initialPoints = new HashSet<TrianglePoint>();
-
 		// Remove each extremum from the remaining points list, while checking if some of them are actually the same point, in which case
 		// simply pick a random point from the remaining ones to replace it
+		var initialPoints = new HashSet<TrianglePoint>();
 		remainingPoints.Remove(yMin);
 		initialPoints.Add(yMin);
 
@@ -207,84 +206,85 @@ public class Hull : MonoBehaviour
 		if (baseTriangle.IsFacingPoint(yMax)) baseTriangle.Reverse();
 		hullTriangles.Add(baseTriangle);
 
-//		var trianglesToProcess = new Queue<Triangle>(hullTriangles);
-//		while (remainingPoints.Count > 0 && trianglesToProcess.Count > 0)
-//		{
-//			var currentTriangle = trianglesToProcess.Dequeue();
-//
-//			// Find the point furthest away from the triangle
-//			TrianglePoint furthestPoint = null;
-//			float maxDistance = float.MinValue;
-//			var pointsFacingCurrentTriangle = new List<TrianglePoint>();
-//			foreach (var point in remainingPoints)
-//			{
-//				if (currentTriangle.IsFacingPoint(point))
-//				{
-//					pointsFacingCurrentTriangle.Add(point);
-//					var distance = currentTriangle.DistanceTo(point);
-//					if (furthestPoint == null || distance > maxDistance)
-//					{
-//						furthestPoint = point;
-//						maxDistance = distance;
-//					}
-//				}
-//			}
-//			
-//			if (furthestPoint != null)
-//			{
-//				// Commence the triangle adding algo
-//				remainingPoints.Remove(furthestPoint);
-//				
-//				// Remove all triangles which are facing this point
-//				var seers = new List<Triangle>();
-//				foreach (var triangle in hullTriangles) if (triangle.IsFacingPoint(furthestPoint)) seers.Add(triangle);
-//				Assert.IsTrue(seers.Count >= 1);
-//				var pointsFromRemovedTriangles = new HashSet<TrianglePoint>();
-//				foreach (var triangleToBeRemoved in seers)
-//				{
-//					hullTriangles.Remove(triangleToBeRemoved);
-//					pointsFromRemovedTriangles.UnionWith(triangleToBeRemoved.Points);
-//					triangleToBeRemoved.DetachPoints();
-//				}
-//
-//				// Find points from deleted triangles which are left without any triangle and delete them, as they will be inside the hull
-//				// after the new triangles are added
-//				// TODO: Maybe just add those points to pointsFacingCurrentTriangle, since they also get culled later in the algorithm?
-//				var pointsInsideHull = new List<TrianglePoint>();
-//				foreach (var point in pointsFromRemovedTriangles) if (point.Triangles.Count() == 0) pointsInsideHull.Add(point);
-//				pointsFromRemovedTriangles.ExceptWith(pointsInsideHull);
-//
-//				// Sew the hole that has come up when removing the triangle(s) by attaching furthestPoint to hole edges
-//				var newTriangles = SewPointToHoleEdges(furthestPoint, pointsFromRemovedTriangles);
-//
-//				// Check orientation of added triangles (if the triangle can see any hull point, reverse it)
-//				var hullPoints = new HashSet<TrianglePoint>(hullTriangles.SelectMany(t => t.Points));
-//				var hullCenter = hullPoints.Select(p => p.Position).Aggregate(Vector3.zero, (acc, p) => acc + p);
-//				hullCenter /= hullPoints.Count;
-//				foreach (var newTriangle in newTriangles) if (newTriangle.IsFacingPosition(hullCenter)) newTriangle.Reverse();
-//
-//				hullTriangles.AddRange(newTriangles);
-//				foreach (var newTriangle in newTriangles) trianglesToProcess.Enqueue(newTriangle);
-//
-//				// Cull the points which are on the inside
-//				foreach (var point in pointsFacingCurrentTriangle)
-//				{
-//					bool outside = false;
-//					foreach (var triangle in hullTriangles)
-//					{
-//						if (triangle.IsFacingPoint(point))
-//						{
-//							outside = true;
-//							break;
-//						}
-//					}
-//					
-//					if (!outside) remainingPoints.Remove(point);
-//				}
-//			}
-//		}
-//
-//		Assert.IsTrue(remainingPoints.Count == 0);
+		var trianglesToProcess = new List<Triangle>(hullTriangles);
+		while (remainingPoints.Count > 0 && trianglesToProcess.Count > 0)
+		{
+			var currentTriangle = trianglesToProcess[0];
+			trianglesToProcess.RemoveAt(0);
+
+			// Find the point furthest away from the triangle
+			TrianglePoint furthestPoint = null;
+			var maxDistance = float.MinValue;
+			var pointsFacingCurrentTriangle = new List<TrianglePoint>();
+			foreach (var point in remainingPoints)
+			{
+				if (currentTriangle.IsFacingPoint(point))
+				{
+					pointsFacingCurrentTriangle.Add(point);
+					var distance = currentTriangle.DistanceTo(point);
+					if (furthestPoint == null || distance > maxDistance)
+					{
+						furthestPoint = point;
+						maxDistance = distance;
+					}
+				}
+			}
+			
+			if (furthestPoint != null)
+			{
+				// Commence the triangle adding algo
+				remainingPoints.Remove(furthestPoint);
+				
+				// Remove all triangles which are facing this point
+				var seers = new List<Triangle>();
+				foreach (var triangle in hullTriangles) if (triangle.IsFacingPoint(furthestPoint)) seers.Add(triangle);
+				Assert.IsTrue(seers.Count >= 1);
+				var pointsFromRemovedTriangles = new HashSet<TrianglePoint>();
+				foreach (var triangleToBeRemoved in seers)
+				{
+					hullTriangles.Remove(triangleToBeRemoved);
+					trianglesToProcess.Remove(triangleToBeRemoved);
+					pointsFromRemovedTriangles.UnionWith(triangleToBeRemoved.Points);
+					triangleToBeRemoved.DetachPoints();
+				}
+
+				// Find points from deleted triangles which are left without any triangle and delete them, as they will be inside the hull
+				// after the new triangles are added
+				var danglingPoints = new List<TrianglePoint>();
+				foreach (var point in pointsFromRemovedTriangles) if (point.Triangles.Count() == 0) danglingPoints.Add(point);
+				pointsFromRemovedTriangles.ExceptWith(danglingPoints);
+
+				// Sew the hole that has come up when removing the triangle(s) by attaching furthestPoint to hole edges
+				var newTriangles = SewPointToHoleEdges(furthestPoint, pointsFromRemovedTriangles);
+
+				// Check orientation of added triangles (if the triangle can see any hull point, reverse it)
+				var hullPoints = new HashSet<TrianglePoint>(hullTriangles.SelectMany(t => t.Points));
+				var hullCenter = hullPoints.Select(p => p.Position).Aggregate(Vector3.zero, (acc, p) => acc + p);
+				hullCenter /= hullPoints.Count;
+				foreach (var newTriangle in newTriangles) if (newTriangle.IsFacingPosition(hullCenter)) newTriangle.Reverse();
+
+				hullTriangles.AddRange(newTriangles);
+				trianglesToProcess.AddRange(newTriangles);
+
+				// Cull the points which are on the inside
+				foreach (var point in pointsFacingCurrentTriangle)
+				{
+					bool outside = false;
+					foreach (var triangle in hullTriangles)
+					{
+						if (triangle.IsFacingPoint(point))
+						{
+							outside = true;
+							break;
+						}
+					}
+					
+					if (!outside) remainingPoints.Remove(point);
+				}
+			}
+		}
+
+		Assert.AreEqual(0, remainingPoints.Count);
 
 		return TrianglesToPartialMesh(hullTriangles);
 	}
@@ -299,6 +299,7 @@ public class Hull : MonoBehaviour
 		var currentPoint = startPoint;
 		TrianglePoint previousPoint = null;
 		TrianglePoint nextPoint = null;
+		var futureTriangles = new List<List<TrianglePoint>>();
 		do
 		{
 			var currentPointNeighbours = currentPoint.GetSinglyLinkedNeighbours();
@@ -308,12 +309,14 @@ public class Hull : MonoBehaviour
 			if (currentPointNeighbours[0] == previousPoint) nextPoint = currentPointNeighbours[1];
 			else nextPoint = currentPointNeighbours[0];
 
-			triangles.Add(new Triangle(new List<TrianglePoint>() { currentPoint, nextPoint, topPoint }));
+			futureTriangles.Add(new List<TrianglePoint>() { currentPoint, nextPoint, topPoint });
 
 			previousPoint = currentPoint;
 			currentPoint = nextPoint;
 		}
 		while (nextPoint != startPoint);
+
+		foreach (var triple in futureTriangles) triangles.Add(new Triangle(triple));
 
 		return triangles;
 	}
