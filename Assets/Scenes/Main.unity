@@ -157,12 +157,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16be2dd88dba34162ac6b51d341d6d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FieldIntensity: 8.82999992
-  FieldScale: .0183000006
-  FirstTierPoints: 4
+  FieldIntensity: 12.1700001
+  FieldScale: .0265999995
+  FirstTierPoints: 5
   TierPointsIncrement: -1
   MaxTiers: 5
-  DrawGizmos: 0
+  DrawGizmos: 1
 --- !u!114 &891532189
 MonoBehaviour:
   m_ObjectHideFlags: 0
