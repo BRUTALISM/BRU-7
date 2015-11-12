@@ -134,7 +134,8 @@ MonoBehaviour:
   PointsPerBatch: 5
   NewBatchInterval: 1
   Extent: 25
-  MaxDistanceBetweenGeneratedPoints: 20
+  MaxDistanceToPreviousBatch: 5
+  MaxDistanceToPreviousPoint: 14
   StartingPointWeight: 1
 --- !u!4 &891532187
 Transform:
@@ -164,7 +165,7 @@ MonoBehaviour:
   FieldScale: .0265999995
   TierPointsIncrement: -1
   MaxTiers: 5
-  DrawGizmos: 1
+  DrawGizmos: 0
 --- !u!114 &891532189
 MonoBehaviour:
   m_ObjectHideFlags: 0

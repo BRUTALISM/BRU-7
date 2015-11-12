@@ -11,7 +11,8 @@ public class CloudGenerator : MonoBehaviour
 	public int PointsPerBatch = 5;
 	public float NewBatchInterval = 2f;
 	public float Extent = 100f;
-	public float MaxDistanceBetweenGeneratedPoints = 5f;
+	public float MaxDistanceToPreviousBatch = 5f;
+	public float MaxDistanceToPreviousPoint = 5f;
 	public float StartingPointWeight = 1f;
 
 	#endregion
@@ -27,6 +28,7 @@ public class CloudGenerator : MonoBehaviour
 	#region Private fields
 
 	private Subject<List<Point>> pointBatches = new Subject<List<Point>>();
+	private Vector3 lastBatchCenter = Vector3.zero;
 
 	#endregion
 
@@ -39,26 +41,26 @@ public class CloudGenerator : MonoBehaviour
 		Observable.Interval(System.TimeSpan.FromSeconds(NewBatchInterval)).Subscribe(_ => pointBatches.OnNext(NewBatch())).AddTo(this);
 	}
 
-	#if UNITY_EDITOR
-	void OnDrawGizmos()
-	{
-		var gizmoDimensions = Vector3.zero;
-		switch (AxisOfSymmetry)
-		{
-			case Axis.XY:
-				gizmoDimensions = new Vector3(Extent, Extent, 0f);
-				break;
-			case Axis.XZ:
-				gizmoDimensions = new Vector3(Extent, 0f, Extent);
-				break;
-			case Axis.YZ:
-				gizmoDimensions = new Vector3(0f, Extent, Extent);
-				break;
-		}
-		Gizmos.color = Color.green;
-		Gizmos.DrawWireCube(transform.position, gizmoDimensions);
-	}
-	#endif
+//	#if UNITY_EDITOR
+//	void OnDrawGizmos()
+//	{
+//		var gizmoDimensions = Vector3.zero;
+//		switch (AxisOfSymmetry)
+//		{
+//			case Axis.XY:
+//				gizmoDimensions = new Vector3(Extent, Extent, 0f);
+//				break;
+//			case Axis.XZ:
+//				gizmoDimensions = new Vector3(Extent, 0f, Extent);
+//				break;
+//			case Axis.YZ:
+//				gizmoDimensions = new Vector3(0f, Extent, Extent);
+//				break;
+//		}
+//		Gizmos.color = Color.green;
+//		Gizmos.DrawWireCube(transform.position, gizmoDimensions);
+//	}
+//	#endif
 
 	#endregion
 
@@ -68,26 +70,32 @@ public class CloudGenerator : MonoBehaviour
 	{
 		var points = new List<Point>();
 
-		var x = AxisOfSymmetry == Axis.YZ ? Random.Range(0f, Extent) : Random.Range(-Extent, Extent);
-		var y = AxisOfSymmetry == Axis.XZ ? Random.Range(0f, Extent) : Random.Range(-Extent, Extent);
-		var z = AxisOfSymmetry == Axis.XY ? Random.Range(0f, Extent) : Random.Range(-Extent, Extent);
-		var lastGeneratedPosition = new Vector3(x, y, z);
+		var lastGeneratedPosition = lastBatchCenter + (Random.rotation * Vector3.forward) * Random.Range(0f, MaxDistanceToPreviousBatch);
 		points.Add(new Point(lastGeneratedPosition, StartingPointWeight));
 
+		lastBatchCenter = Vector3.zero;
 		for (int numberOfPoints = 1; numberOfPoints < PointsPerBatch; numberOfPoints++)
 		{
-			var offsetLength = Random.Range(0f, MaxDistanceBetweenGeneratedPoints);
+			var offsetLength = Random.Range(0f, MaxDistanceToPreviousPoint);
 			var randomPosition = lastGeneratedPosition + (Random.rotation * Vector3.forward) * offsetLength;
-
-			x = AxisOfSymmetry == Axis.YZ ? Mathf.Clamp(randomPosition.x, 0f, Extent) : Mathf.Clamp(randomPosition.x, -Extent, Extent);
-			y = AxisOfSymmetry == Axis.XZ ? Mathf.Clamp(randomPosition.y, 0f, Extent) : Mathf.Clamp(randomPosition.y, -Extent, Extent);
-			z = AxisOfSymmetry == Axis.XY ? Mathf.Clamp(randomPosition.z, 0f, Extent) : Mathf.Clamp(randomPosition.z, -Extent, Extent);
-			lastGeneratedPosition = new Vector3(x, y, z);
+			lastGeneratedPosition = ClampToExtent(randomPosition);
 
 			points.Add(new Point(lastGeneratedPosition, StartingPointWeight));
+
+			lastBatchCenter += lastGeneratedPosition;
 		}
+
+		lastBatchCenter /= points.Count;
 			
 		return points;
+	}
+
+	private Vector3 ClampToExtent(Vector3 vector)
+	{
+		var x = AxisOfSymmetry == Axis.YZ ? Mathf.Clamp(vector.x, 0f, Extent) : Mathf.Clamp(vector.x, -Extent, Extent);
+		var y = AxisOfSymmetry == Axis.XZ ? Mathf.Clamp(vector.y, 0f, Extent) : Mathf.Clamp(vector.y, -Extent, Extent);
+		var z = AxisOfSymmetry == Axis.XY ? Mathf.Clamp(vector.z, 0f, Extent) : Mathf.Clamp(vector.z, -Extent, Extent);
+		return new Vector3(x, y, z);
 	}
 
 	#endregion
