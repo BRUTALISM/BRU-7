@@ -6,7 +6,7 @@ public class MeshPacker : MonoBehaviour
 {
 	#region Editor public fields
 
-	public int WindowSize = 10;
+	public int PartialMeshesInWindow = 10;
 	public Material MeshMaterial;
 
 	#endregion
@@ -37,7 +37,7 @@ public class MeshPacker : MonoBehaviour
 	{
 		partialMeshes.Enqueue(newPartialMesh);
 
-		if (partialMeshes.Count > WindowSize) partialMeshes.Dequeue();
+		if (partialMeshes.Count > PartialMeshesInWindow) partialMeshes.Dequeue();
 
 		var meshBuilder = new MeshBuilder();
 		foreach (var partialMesh in partialMeshes) meshBuilder.Pack(partialMesh);

@@ -129,11 +129,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c67ebf723b2bc4216be11a0188c6df93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfPoints: 8
   AxisOfSymmetry: 2
-  Extent: 26
+  InitialBatches: 10
+  PointsPerBatch: 5
+  NewBatchInterval: 1
+  Extent: 25
+  MaxDistanceBetweenGeneratedPoints: 10
   StartingPointWeight: 1
-  NewPointInterval: .400000006
 --- !u!4 &891532187
 Transform:
   m_ObjectHideFlags: 0
@@ -159,10 +161,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldIntensity: 12.1700001
   FieldScale: .0265999995
-  FirstTierPoints: 5
   TierPointsIncrement: -1
   MaxTiers: 5
-  DrawGizmos: 1
+  DrawGizmos: 0
 --- !u!114 &891532189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WindowSize: 12
+  PartialMeshesInWindow: 20
   MeshMaterial: {fileID: 2100000, guid: 31ff2753e7f2841b692185e35e7e0d64, type: 2}
 --- !u!114 &891532191
 MonoBehaviour:

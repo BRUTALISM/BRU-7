@@ -19,6 +19,8 @@ public class PointVisualizer : MonoBehaviour
 	private CompositeDisposable disposables = new CompositeDisposable();
 	private List<GameObject> visualizations = new List<GameObject>();
 
+	private Dictionary<float, Material> materialsByWeight = new Dictionary<float, Material>();
+
 	#endregion
 
 	#region Unity methods
@@ -31,7 +33,7 @@ public class PointVisualizer : MonoBehaviour
 			{
 				var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				cube.transform.position = point.Position;
-				cube.GetComponent<MeshRenderer>().sharedMaterial = PointMaterial;
+				cube.GetComponent<MeshRenderer>().sharedMaterial = MaterialForWeight(point.Weight);
 				cube.transform.localScale = Vector3.one * 0.2f;
 				
 				cube.transform.SetParent(this.transform);
@@ -46,6 +48,19 @@ public class PointVisualizer : MonoBehaviour
 		disposables.Dispose();
 		foreach (var vis in visualizations) Destroy(vis);
 		visualizations.Clear();
+	}
+
+	#endregion
+
+	#region Private methods
+
+	private Material MaterialForWeight(float weight)
+	{
+		if (materialsByWeight.ContainsKey(weight)) return materialsByWeight[weight];
+		var material = new Material(PointMaterial);
+		material.color = new Color(1f, 1f - weight, 1f - weight);
+		materialsByWeight[weight] = material;
+		return material;
 	}
 
 	#endregion

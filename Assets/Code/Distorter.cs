@@ -13,7 +13,6 @@ public class Distorter : MonoBehaviour
 	[Range(0.0001f, 0.1f)]
 	public float FieldScale = 0.0001f;
 
-	public int FirstTierPoints = 4;
 	public int TierPointsIncrement = -1;
 	public int MaxTiers = 5;
 
@@ -31,8 +30,6 @@ public class Distorter : MonoBehaviour
 
 	private Subject<List<Point>> groupedPoints = new Subject<List<Point>>();
 
-	private List<Point> currentGroup = new List<Point>();
-
 	private IVectorField vectorField;
 
 	private float extent = 50f;
@@ -47,7 +44,7 @@ public class Distorter : MonoBehaviour
 		var cloudGenerator = GetComponent<CloudGenerator>();
 		if (cloudGenerator != null)
 		{
-			cloudGenerator.Points.Subscribe(AddToGroup).AddTo(this);
+			cloudGenerator.PointBatches.Subscribe(AddToGroup).AddTo(this);
 			extent = cloudGenerator.Extent * 2;
 			axisOfSymmetry = cloudGenerator.AxisOfSymmetry;
 		}
@@ -90,33 +87,29 @@ public class Distorter : MonoBehaviour
 
 	#region Grouping and distorting
 
-	private void AddToGroup(Point newPoint)
+	private void AddToGroup(List<Point> pointBatch)
 	{
-		if (currentGroup.Count == FirstTierPoints)
+		var nextBatch = new List<Point>(pointBatch);
+		var nextTierPoints = pointBatch.Count + TierPointsIncrement;
+		var tierCount = 1;
+		IEnumerable<Point> previousTier = pointBatch;
+		while (tierCount < MaxTiers && nextTierPoints > 0)
 		{
-			var nextBatch = new List<Point>(currentGroup);
-			var nextTierPoints = FirstTierPoints + TierPointsIncrement;
-			var tierCount = 1;
-			IEnumerable<Point> previousTier = currentGroup;
-			while (tierCount < MaxTiers && nextTierPoints > 0)
-			{
-				var currentTier = previousTier
-					.OrderBy(p => Random.value)
-					.Take(nextTierPoints)
-					.Select(p => new Point(p.Position + FieldAt(p.Position), p.Weight));
-				
-				nextBatch.AddRange(currentTier);
-
-				nextTierPoints += TierPointsIncrement;
-				previousTier = currentTier;
-				tierCount++;
-			}
-
-			groupedPoints.OnNext(nextBatch);
-			currentGroup = new List<Point>();
+			tierCount++;
+			
+			var currentTier = previousTier
+				.OrderBy(p => Random.value)
+				.Take(nextTierPoints)
+				.Select(p => new Point(p.Position + FieldAt(p.Position), 1f / tierCount));
+			
+			nextBatch.AddRange(currentTier);
+			
+			nextTierPoints += TierPointsIncrement;
+			previousTier = currentTier;
 		}
-
-		currentGroup.Add(newPoint);
+		
+		groupedPoints.OnNext(nextBatch);
+		pointBatch = new List<Point>();
 	}
 
 	private Vector3 FieldAt(Vector3 position)
