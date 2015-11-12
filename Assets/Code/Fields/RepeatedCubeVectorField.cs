@@ -5,15 +5,15 @@ public class RepeatedCubeVectorField : IVectorField
 {
 	private Vector3[,,] gradient;
 
+	public float Intensity { get; set; }
 	public int Dimension { get; private set; }
 
 	private const int DefaultDimension = 8;
 
-	public RepeatedCubeVectorField(int dimension = DefaultDimension)
+	public RepeatedCubeVectorField(float intensity, int dimension = DefaultDimension)
 	{
-		this.Dimension = dimension;
-
-		// FIXME: Random seed!
+		Intensity = intensity;
+		Dimension = dimension;
 
 		gradient = new Vector3[dimension, dimension, dimension];
 		for (int i = 0; i < dimension; i++)
@@ -60,7 +60,7 @@ public class RepeatedCubeVectorField : IVectorField
 			(1 - tx) * ty * tz * gradient[floorX, ceilY, ceilZ] +
 			(1 - tx) * ty * (1 - tz) * gradient[floorX, ceilY, floorZ] +
 			(1 - tx) * (1 - ty) * tz * gradient[floorX, floorY, ceilZ] +
-			(1 - tx) * (1 - ty) * (1 - tz) * gradient[floorX, floorY, floorZ]).normalized;
+			(1 - tx) * (1 - ty) * (1 - tz) * gradient[floorX, floorY, floorZ]).normalized * Intensity;
 	}
 
 	public Vector3 VectorAt(Vector3 position)

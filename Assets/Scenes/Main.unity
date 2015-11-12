@@ -130,11 +130,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AxisOfSymmetry: 2
-  InitialBatches: 10
+  InitialBatches: 20
   PointsPerBatch: 5
   NewBatchInterval: 1
   Extent: 25
-  MaxDistanceBetweenGeneratedPoints: 10
+  MaxDistanceBetweenGeneratedPoints: 20
   StartingPointWeight: 1
 --- !u!4 &891532187
 Transform:
@@ -159,11 +159,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16be2dd88dba34162ac6b51d341d6d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FieldIntensity: 12.1700001
+  RandomFieldIntensity: 10
+  ConstantFieldIntensity: 10
   FieldScale: .0265999995
   TierPointsIncrement: -1
   MaxTiers: 5
-  DrawGizmos: 0
+  DrawGizmos: 1
 --- !u!114 &891532189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PartialMeshesInWindow: 20
+  PartialMeshesInWindow: 40
   MeshMaterial: {fileID: 2100000, guid: 31ff2753e7f2841b692185e35e7e0d64, type: 2}
 --- !u!114 &891532191
 MonoBehaviour:
@@ -283,7 +284,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 996138632}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -100}
+  m_LocalPosition: {x: 0, y: 0, z: -120}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

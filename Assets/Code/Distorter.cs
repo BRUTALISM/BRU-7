@@ -8,7 +8,10 @@ public class Distorter : MonoBehaviour
 	#region Editor public fields
 
 	[Range(0f, 20f)]
-	public float FieldIntensity = 10f;
+	public float RandomFieldIntensity = 10f;
+
+	[Range(0f, 20f)]
+	public float ConstantFieldIntensity = 2f;
 
 	[Range(0.0001f, 0.1f)]
 	public float FieldScale = 0.0001f;
@@ -49,7 +52,18 @@ public class Distorter : MonoBehaviour
 			axisOfSymmetry = cloudGenerator.AxisOfSymmetry;
 		}
 
-		vectorField = new RepeatedCubeVectorField();
+		var randomField = new RepeatedCubeVectorField(RandomFieldIntensity);
+
+		var constantFieldDirection = Random.rotation * Vector3.forward * ConstantFieldIntensity;
+		constantFieldDirection.x = Mathf.Abs(constantFieldDirection.x);
+		constantFieldDirection.y = Mathf.Abs(constantFieldDirection.y);
+		constantFieldDirection.z = Mathf.Abs(constantFieldDirection.z);
+		var constantField = new ConstantVectorField(constantFieldDirection);
+
+		var compositeField = new CompositeVectorField();
+		compositeField.Add(randomField);
+		compositeField.Add(constantField);
+		vectorField = compositeField;
 	}
 
 	#if UNITY_EDITOR
@@ -131,7 +145,7 @@ public class Distorter : MonoBehaviour
 				break;
 		}
 
-		return Vector3.Scale(vectorField.VectorAt(position * FieldScale).normalized * FieldIntensity, mirror);
+		return Vector3.Scale(vectorField.VectorAt(position * FieldScale), mirror);
 	}
 
 	#endregion
