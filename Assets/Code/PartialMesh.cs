@@ -7,6 +7,7 @@ public class PartialMesh
 	public List<int> Indices = new List<int>();
 	public List<Vector3> Normals = new List<Vector3>();
 	public List<Color> Colors = new List<Color>();
+	public List<Vector4> Tangents = new List<Vector4>();
 
 	public PartialMesh() {}
 	public PartialMesh(PartialMesh original)
@@ -15,5 +16,6 @@ public class PartialMesh
 		this.Indices.AddRange(original.Indices);
 		this.Normals.AddRange(original.Normals);
 		this.Colors.AddRange(original.Colors);
+		this.Tangents.AddRange(original.Tangents);
 	}
 }

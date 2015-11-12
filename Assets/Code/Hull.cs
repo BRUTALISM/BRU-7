@@ -23,6 +23,8 @@ public class Hull : MonoBehaviour
 
 	private Subject<PartialMesh> hulled = new Subject<PartialMesh>();
 
+	private float pointLifetimeSeconds;
+
 	#endregion
 
 	#region Unity methods
@@ -30,6 +32,9 @@ public class Hull : MonoBehaviour
 	void Start()
 	{
 		GetComponent<Mirror>().MirroredPoints.Subscribe(points => HullCalculation(points)).AddTo(this);
+
+		var cloudGenerator = GetComponent<CloudGenerator>();
+		pointLifetimeSeconds = cloudGenerator.InitialBatches * cloudGenerator.NewBatchInterval;
 	}
 
 	#endregion
@@ -41,8 +46,10 @@ public class Hull : MonoBehaviour
 		private HashSet<Triangle> triangles = new HashSet<Triangle>();
 		public IEnumerable<Triangle> Triangles { get { return triangles; } }
 
-		public TrianglePoint(Vector3 position, float weight) : base(position, weight) { }
-		public TrianglePoint(Point point) : base(point.Position, point.Weight) { }
+		public TrianglePoint(Point point) : base(point.Position, point.Weight)
+		{
+			CreationTime = point.CreationTime;
+		}
 
 		public void AddToTriangle(Triangle triangle)
 		{
@@ -329,6 +336,7 @@ public class Hull : MonoBehaviour
 					// Duplicate each vertex so that each face is flat shaded
 					partialMesh.Indices.Add(partialMesh.Vertices.Count);
 					partialMesh.Vertices.Add(point.Position);
+					partialMesh.Tangents.Add(PackTangentForPoint(point));
 				}
 			}
 		}
@@ -351,12 +359,23 @@ public class Hull : MonoBehaviour
 						pointIndices[point] = index;
 
 						partialMesh.Vertices.Add(point.Position);
+						partialMesh.Tangents.Add(PackTangentForPoint(point));
 					}
 				}
 			}
 		}
 
 		return partialMesh;
+	}
+
+	private Vector4 PackTangentForPoint(TrianglePoint point)
+	{
+		// Tangents are packed with values used by the shader to animate shit
+		// X - point creation time
+		// Y - point death time
+		// Z - not used
+		// W - not used
+		return new Vector4(point.CreationTime, point.CreationTime + pointLifetimeSeconds, 0f, 0f);
 	}
 
 	#endregion

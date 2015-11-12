@@ -4,15 +4,18 @@ Shader "BRUTALISM/Selfie"
 	{
 		_Color ("Color", Color) = (1,1,1,1)
 		_Emission ("Emission", Range(0.0, 1.0)) = 0.5
+		_AnimationDuration ("Animation Duration", Range(0.0, 5.0)) = 0.5
 	}
 
 	SubShader
 	{
+		/*Tags { "Queue"="Transparent" "RenderType"="Transparent" }*/
 		Tags { "RenderType"="Opaque" }
 		LOD 200
 
 		CGPROGRAM
 
+		/*#pragma surface surf Lambert alpha fullforwardshadows vertex:vert*/
 		#pragma surface surf Lambert fullforwardshadows vertex:vert
 		#pragma target 3.0
 
@@ -21,15 +24,31 @@ Shader "BRUTALISM/Selfie"
 			float4 color : COLOR;
 			float3 worldPos;
 			float3 localPos;
+			float4 tangent;
+			float alpha;
 		};
 
 		fixed4 _Color;
 		fixed _Emission;
+		float _AnimationDuration;
 
 		void vert (inout appdata_full v, out Input o)
 		{
 			UNITY_INITIALIZE_OUTPUT(Input, o);
+
+			float fadeIn = saturate((_Time.y - v.tangent.x) / _AnimationDuration);
+			float fadeOut = saturate((v.tangent.y - _Time.y) / _AnimationDuration);
+			float fadeInOut = fadeIn * step(_Time.y, v.tangent.x + _AnimationDuration) +
+			                  fadeOut * step(v.tangent.x + _AnimationDuration, _Time.y);
+			/*fadeInOut = smoothstep(0, 1, fadeInOut);*/
+			v.vertex.xyz *= fadeInOut;
+
 			o.localPos = v.vertex.xyz;
+			o.tangent = v.tangent;
+
+			// Calculate the alpha for this vertex based on whether we should fade in, show, or fade out
+			/*o.alpha = fadeInOut;*/
+			o.alpha = 1;
 		}
 
 		void surf(Input input, inout SurfaceOutput output)
@@ -38,7 +57,7 @@ Shader "BRUTALISM/Selfie"
 
 			output.Albedo = color.rgb;
 			output.Emission = _Emission * input.color;
-			output.Alpha = color.a;
+			output.Alpha = input.alpha;
 		}
 
 		ENDCG

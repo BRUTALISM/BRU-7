@@ -5,10 +5,12 @@ public class Point : IPosition
 {
 	#region Public properties
 
-	public float Weight { get; private set; }
-
 	// IPosition impl
 	public Vector3 Position { get; set; }
+
+	public float Weight { get; private set; }
+
+	public float CreationTime { get; protected set; }
 
 	#endregion
 
@@ -18,6 +20,7 @@ public class Point : IPosition
 	public Point(Vector3 position, float weight)
 	{
 		Position = position;
-		this.Weight = Mathf.Clamp01(weight);
+		Weight = Mathf.Clamp01(weight);
+		CreationTime = Time.time;
 	}
 }

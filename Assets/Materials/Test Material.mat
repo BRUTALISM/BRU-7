@@ -93,10 +93,6 @@ Material:
         second: .5
       data:
         first:
-          name: _Emission
-        second: .0780000016
-      data:
-        first:
           name: _Parallax
         second: .0199999996
       data:
@@ -131,6 +127,14 @@ Material:
         first:
           name: _Metallic
         second: 0
+      data:
+        first:
+          name: _Emission
+        second: .0780000016
+      data:
+        first:
+          name: _AnimationDuration
+        second: .100000001
     m_Colors:
       data:
         first:

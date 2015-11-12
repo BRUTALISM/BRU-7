@@ -6,7 +6,6 @@ public class MeshPacker : MonoBehaviour
 {
 	#region Editor public fields
 
-	public int PartialMeshesInWindow = 10;
 	public Material MeshMaterial;
 
 	#endregion
@@ -20,6 +19,8 @@ public class MeshPacker : MonoBehaviour
 
 	private List<GameObject> children = null;
 
+	private int partialMeshesInWindow = 0;
+
 	#endregion
 
 	#region Unity methods
@@ -27,6 +28,9 @@ public class MeshPacker : MonoBehaviour
 	void Start()
 	{
 		GetComponent<Hull>().HulledPartialMeshes.Subscribe(PackMesh).AddTo(this);
+
+		// Times 2 because of mirroring
+		partialMeshesInWindow = GetComponent<CloudGenerator>().InitialBatches * 2;
 	}
 
 	#endregion
@@ -37,7 +41,7 @@ public class MeshPacker : MonoBehaviour
 	{
 		partialMeshes.Enqueue(newPartialMesh);
 
-		if (partialMeshes.Count > PartialMeshesInWindow) partialMeshes.Dequeue();
+		if (partialMeshes.Count > partialMeshesInWindow) partialMeshes.Dequeue();
 
 		var meshBuilder = new MeshBuilder();
 		foreach (var partialMesh in partialMeshes) meshBuilder.Pack(partialMesh);
