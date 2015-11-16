@@ -36,9 +36,14 @@ public class CloudGenerator : MonoBehaviour
 
 	void Start()
 	{
-		InitialBatches.Times(_ => pointBatches.OnNext(NewBatch()));
+		var seedGenerator = GetComponent<RandomSeedGenerator>();
+		seedGenerator.Seeds.Subscribe(seed =>
+		{
+			Random.seed = seed;
+			InitialBatches.Times(_ => pointBatches.OnNext(NewBatch()));
+		}).AddTo(this);
 
-		Observable.Interval(System.TimeSpan.FromSeconds(NewBatchInterval)).Subscribe(_ => pointBatches.OnNext(NewBatch())).AddTo(this);
+//		Observable.Interval(System.TimeSpan.FromSeconds(NewBatchInterval)).Subscribe(_ => pointBatches.OnNext(NewBatch())).AddTo(this);
 	}
 
 //	#if UNITY_EDITOR
