@@ -62,7 +62,7 @@ public class RandomSeedGenerator : MonoBehaviour
 		}
 
 		var seed = SeedWhenEmpty;
-		if (seedString.Length > 1)
+		if (seedString.Length > 0)
 		{
 			seed = seedString.AsSafeEnumerable().Aggregate(SeedWhenEmpty, (acc, c) => acc * (1 + (int)c));
 		}
