@@ -131,12 +131,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AxisOfSymmetry: 2
-  InitialBatches: 20
+  InitialBatches: 40
   PointsPerBatch: 5
   NewBatchInterval: .100000001
   Extent: 25
   MaxDistanceToPreviousBatch: 4
-  MaxDistanceToPreviousPoint: 14
+  DistanceToPreviousBatchScale: {x: 1, y: .5, z: 1}
+  MaxDistanceToPreviousPoint: 10
   StartingPointWeight: 1
 --- !u!4 &891532187
 Transform:
@@ -161,9 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16be2dd88dba34162ac6b51d341d6d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RandomFieldIntensity: 8
-  ConstantFieldIntensity: 10
-  ConstantFieldDirection: {x: 1, y: 2, z: 1}
+  RandomFieldIntensity: 6
+  ConstantFieldIntensity: 12
+  ConstantFieldDirection: {x: 1, y: 1, z: 2}
   FieldScale: .0265999995
   TierPointsIncrement: -1
   MaxTiers: 5

@@ -53,15 +53,6 @@ public class Distorter : MonoBehaviour
 			extent = cloudGenerator.Extent * 2;
 			axisOfSymmetry = cloudGenerator.AxisOfSymmetry;
 		}
-
-		var randomField = new RepeatedCubeVectorField(RandomFieldIntensity);
-
-		var constantField = new ConstantVectorField(ConstantFieldDirection.normalized);
-
-		var compositeField = new CompositeVectorField();
-		compositeField.Add(randomField);
-		compositeField.Add(constantField);
-		vectorField = compositeField;
 	}
 
 	#if UNITY_EDITOR
@@ -99,8 +90,22 @@ public class Distorter : MonoBehaviour
 
 	#region Grouping and distorting
 
+	private void RegenerateField()
+	{
+		var randomField = new RepeatedCubeVectorField(RandomFieldIntensity);
+
+		var constantField = new ConstantVectorField(ConstantFieldDirection.normalized * ConstantFieldIntensity);
+
+		var compositeField = new CompositeVectorField();
+		compositeField.Add(randomField);
+		compositeField.Add(constantField);
+		vectorField = compositeField;
+	}
+
 	private void AddToGroup(List<Point> pointBatch)
 	{
+		RegenerateField();
+
 		var nextBatch = new List<Point>(pointBatch);
 		var nextTierPoints = pointBatch.Count + TierPointsIncrement;
 		var tierCount = 1;
@@ -110,7 +115,7 @@ public class Distorter : MonoBehaviour
 			tierCount++;
 			
 			var currentTier = previousTier
-				.OrderBy(p => Random.value)
+				.OrderBy(p => Nasum.Value)
 				.Take(nextTierPoints)
 				.Select(p => new Point(p.Position + FieldAt(p.Position), 1f / tierCount));
 			

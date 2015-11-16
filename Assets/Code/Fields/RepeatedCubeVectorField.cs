@@ -22,8 +22,8 @@ public class RepeatedCubeVectorField : IVectorField
 			{
 				for (int k = 0; k < dimension; k++)
 				{
-					gradient[i, j, k] = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f),
-					                                Random.Range(-1f, 1f)).normalized;
+					gradient[i, j, k] = new Vector3(Nasum.Range(-1f, 1f), Nasum.Range(-1f, 1f),
+					                                Nasum.Range(-1f, 1f)).normalized;
 				}
 			}
 		}

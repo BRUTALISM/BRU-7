@@ -12,6 +12,7 @@ public class CloudGenerator : MonoBehaviour
 	public float NewBatchInterval = 2f;
 	public float Extent = 100f;
 	public float MaxDistanceToPreviousBatch = 5f;
+	public Vector3 DistanceToPreviousBatchScale = new Vector3(1f, 0.5f, 1f);
 	public float MaxDistanceToPreviousPoint = 5f;
 	public float StartingPointWeight = 1f;
 
@@ -39,7 +40,8 @@ public class CloudGenerator : MonoBehaviour
 		var seedGenerator = GetComponent<RandomSeedGenerator>();
 		seedGenerator.Seeds.Subscribe(seed =>
 		{
-			Random.seed = seed;
+			Nasum.Seed = seed;
+			lastBatchCenter = Vector3.zero;
 			InitialBatches.Times(_ => pointBatches.OnNext(NewBatch()));
 		}).AddTo(this);
 
@@ -75,14 +77,16 @@ public class CloudGenerator : MonoBehaviour
 	{
 		var points = new List<Point>();
 
-		var lastGeneratedPosition = lastBatchCenter + (Random.rotation * Vector3.forward) * Random.Range(0f, MaxDistanceToPreviousBatch);
+		var lastGeneratedPosition = lastBatchCenter + (Nasum.Rotation * Vector3.forward) * Nasum.Range(0f, MaxDistanceToPreviousBatch);
 		points.Add(new Point(lastGeneratedPosition, StartingPointWeight));
 
 		lastBatchCenter = Vector3.zero;
 		for (int numberOfPoints = 1; numberOfPoints < PointsPerBatch; numberOfPoints++)
 		{
-			var offsetLength = Random.Range(0f, MaxDistanceToPreviousPoint);
-			var randomPosition = lastGeneratedPosition + (Random.rotation * Vector3.forward) * offsetLength;
+			var offsetLength = Nasum.Range(0f, MaxDistanceToPreviousPoint);
+			var randomOffset = Nasum.Rotation * Vector3.forward * offsetLength;
+			randomOffset.Scale(DistanceToPreviousBatchScale);
+			var randomPosition = lastGeneratedPosition + randomOffset;
 			lastGeneratedPosition = ClampToExtent(randomPosition);
 
 			points.Add(new Point(lastGeneratedPosition, StartingPointWeight));
