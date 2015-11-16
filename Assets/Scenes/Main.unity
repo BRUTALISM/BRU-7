@@ -134,7 +134,7 @@ MonoBehaviour:
   PointsPerBatch: 5
   NewBatchInterval: 1
   Extent: 25
-  MaxDistanceToPreviousBatch: 5
+  MaxDistanceToPreviousBatch: 4
   MaxDistanceToPreviousPoint: 14
   StartingPointWeight: 1
 --- !u!4 &891532187
@@ -160,12 +160,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16be2dd88dba34162ac6b51d341d6d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RandomFieldIntensity: 10
+  RandomFieldIntensity: 8
   ConstantFieldIntensity: 10
+  ConstantFieldDirection: {x: 1, y: 1, z: 1}
   FieldScale: .0265999995
   TierPointsIncrement: -1
   MaxTiers: 5
-  DrawGizmos: 0
+  DrawGizmos: 1
 --- !u!114 &891532189
 MonoBehaviour:
   m_ObjectHideFlags: 0

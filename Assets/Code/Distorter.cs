@@ -13,6 +13,8 @@ public class Distorter : MonoBehaviour
 	[Range(0f, 20f)]
 	public float ConstantFieldIntensity = 2f;
 
+	public Vector3 ConstantFieldDirection = Vector3.one;
+
 	[Range(0.0001f, 0.1f)]
 	public float FieldScale = 0.0001f;
 
@@ -54,11 +56,11 @@ public class Distorter : MonoBehaviour
 
 		var randomField = new RepeatedCubeVectorField(RandomFieldIntensity);
 
-		var constantFieldDirection = Random.rotation * Vector3.forward * ConstantFieldIntensity;
-		constantFieldDirection.x = Mathf.Abs(constantFieldDirection.x);
-		constantFieldDirection.y = Mathf.Abs(constantFieldDirection.y);
-		constantFieldDirection.z = Mathf.Abs(constantFieldDirection.z);
-		var constantField = new ConstantVectorField(constantFieldDirection);
+//		var constantFieldDirection = Random.rotation * Vector3.forward * ConstantFieldIntensity;
+//		constantFieldDirection.x = Mathf.Abs(constantFieldDirection.x);
+//		constantFieldDirection.y = Mathf.Abs(constantFieldDirection.y);
+//		constantFieldDirection.z = Mathf.Abs(constantFieldDirection.z);
+		var constantField = new ConstantVectorField(ConstantFieldDirection);
 
 		var compositeField = new CompositeVectorField();
 		compositeField.Add(randomField);
