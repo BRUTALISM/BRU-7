@@ -56,11 +56,7 @@ public class Distorter : MonoBehaviour
 
 		var randomField = new RepeatedCubeVectorField(RandomFieldIntensity);
 
-//		var constantFieldDirection = Random.rotation * Vector3.forward * ConstantFieldIntensity;
-//		constantFieldDirection.x = Mathf.Abs(constantFieldDirection.x);
-//		constantFieldDirection.y = Mathf.Abs(constantFieldDirection.y);
-//		constantFieldDirection.z = Mathf.Abs(constantFieldDirection.z);
-		var constantField = new ConstantVectorField(ConstantFieldDirection);
+		var constantField = new ConstantVectorField(ConstantFieldDirection.normalized);
 
 		var compositeField = new CompositeVectorField();
 		compositeField.Add(randomField);
