@@ -6,11 +6,11 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Test Material
-  m_Shader: {fileID: 4800000, guid: ffc5dbdf349be4fc0a8d460cb98356e8, type: 3}
+  m_Name: Metallic PBR
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -102,7 +102,7 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: .5
+        second: .352999985
       data:
         first:
           name: _BumpScale
@@ -126,15 +126,7 @@ Material:
       data:
         first:
           name: _Metallic
-        second: 0
-      data:
-        first:
-          name: _Emission
-        second: .0780000016
-      data:
-        first:
-          name: _AnimationDuration
-        second: .5
+        second: .697000027
     m_Colors:
       data:
         first:
@@ -143,4 +135,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: .25, g: .251838237, b: .251838237, a: 1}
+        second: {r: .375, g: .375, b: .375, a: 1}

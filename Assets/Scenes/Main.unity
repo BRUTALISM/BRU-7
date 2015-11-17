@@ -337,7 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: 31ff2753e7f2841b692185e35e7e0d64, type: 2}
+  MeshMaterial: {fileID: 2100000, guid: ed87b6e9485ff4a18b0bbd683d2d3bd1, type: 2}
 --- !u!114 &891532191
 MonoBehaviour:
   m_ObjectHideFlags: 0
