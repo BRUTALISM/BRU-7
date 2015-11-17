@@ -77,14 +77,16 @@ public class CloudGenerator : MonoBehaviour
 	{
 		var points = new List<Point>();
 
-		var lastGeneratedPosition = lastBatchCenter + (Nasum.Rotation * Vector3.forward) * Nasum.Range(0f, MaxDistanceToPreviousBatch);
+		var randomOffset = Nasum.Rotation * Vector3.forward * Nasum.Range(0f, MaxDistanceToPreviousBatch);
+		randomOffset.Scale(DistanceToPreviousBatchScale);
+		var lastGeneratedPosition = lastBatchCenter + randomOffset;
 		points.Add(new Point(lastGeneratedPosition, StartingPointWeight));
 
 		lastBatchCenter = Vector3.zero;
 		for (int numberOfPoints = 1; numberOfPoints < PointsPerBatch; numberOfPoints++)
 		{
 			var offsetLength = Nasum.Range(0f, MaxDistanceToPreviousPoint);
-			var randomOffset = Nasum.Rotation * Vector3.forward * offsetLength;
+			randomOffset = Nasum.Rotation * Vector3.forward * offsetLength;
 			randomOffset.Scale(DistanceToPreviousBatchScale);
 			var randomPosition = lastGeneratedPosition + randomOffset;
 			lastGeneratedPosition = ClampToExtent(randomPosition);
@@ -95,7 +97,7 @@ public class CloudGenerator : MonoBehaviour
 		}
 
 		lastBatchCenter /= points.Count;
-			
+
 		return points;
 	}
 
