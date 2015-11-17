@@ -134,7 +134,7 @@ Material:
       data:
         first:
           name: _AnimationDuration
-        second: .400000006
+        second: .5
     m_Colors:
       data:
         first:

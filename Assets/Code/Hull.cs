@@ -305,7 +305,6 @@ public class Hull : MonoBehaviour
 		do
 		{
 			var currentPointNeighbours = currentPoint.GetSinglyLinkedNeighbours();
-			Assert.AreEqual(2, currentPointNeighbours.Count, "singly linked neighbour count is 2");
 
 			// Check that we're always moving in the same direction
 			if (currentPointNeighbours[0] == previousPoint) nextPoint = currentPointNeighbours[1];

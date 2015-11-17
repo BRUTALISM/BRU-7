@@ -6,6 +6,9 @@ public class Orbit : MonoBehaviour
 	#region Editor public fields
 
 	public float RotationLerpFactor = 0.5f;
+	public bool XRotation = true;
+	public bool YRotation = true;
+	public bool ZRotation = true;
 
 	#endregion
 
@@ -36,7 +39,15 @@ public class Orbit : MonoBehaviour
 		var gyroRotation = rotationOffset * ConvertRotation(Input.gyro.attitude);
 
 		transform.position = Vector3.zero;
-		transform.rotation = Quaternion.Lerp(transform.rotation, gyroRotation, RotationLerpFactor);
+
+		var rotation = Quaternion.Lerp(transform.rotation, gyroRotation, RotationLerpFactor);
+		if (!XRotation || !YRotation || !ZRotation)
+		{
+			rotation = Quaternion.Euler(XRotation ? rotation.eulerAngles.x : 0f, YRotation ? rotation.eulerAngles.y : 0f,
+				ZRotation ? rotation.eulerAngles.z : 0f);
+		}
+		transform.rotation = rotation;
+
 		transform.position = -transform.forward * distanceFromOrigin;
 	}
 

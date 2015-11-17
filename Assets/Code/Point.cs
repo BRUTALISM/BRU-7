@@ -21,5 +21,6 @@ public class Point : IPosition
 	{
 		Position = position;
 		Weight = Mathf.Clamp01(weight);
+		CreationTime = SafeTime.Instance.Time;
 	}
 }
