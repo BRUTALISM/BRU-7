@@ -13,13 +13,13 @@ public class RandomSeedGenerator : MonoBehaviour
 
 	#region Public properties
 
-	public IObservable<int> Seeds { get { return seedsObservable; } }
+	public IObservable<int> Seeds { get { return seedsSubject; } }
 
 	#endregion
 
 	#region Private fields
 
-	private Subject<int> seedsObservable = new Subject<int>();
+	private Subject<int> seedsSubject = new Subject<int>();
 
 	private string seedString = "";
 
@@ -38,7 +38,7 @@ public class RandomSeedGenerator : MonoBehaviour
 			.AddTo(this);
 
 		// Fire out an initial seed, to start the pipeline
-		seedsObservable.OnNext(SeedWhenEmpty);
+		seedsSubject.OnNext(SeedWhenEmpty);
 	}
 
 	#endregion
@@ -66,7 +66,7 @@ public class RandomSeedGenerator : MonoBehaviour
 		{
 			seed = seedString.AsSafeEnumerable().Aggregate(SeedWhenEmpty, (acc, c) => acc * (1 + (int)c));
 		}
-		seedsObservable.OnNext(seed);
+		seedsSubject.OnNext(seed);
 
 		Debug.LogFormat("---[ {0} => {1} ] ---", seedString.Length > 0 ? seedString : "EMPTY", seed);
 	}

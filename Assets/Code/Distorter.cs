@@ -7,12 +7,9 @@ public class Distorter : MonoBehaviour
 {
 	#region Editor public fields
 
-	[Range(0f, 20f)]
 	public float RandomFieldIntensity = 10f;
 
-	[Range(0f, 20f)]
 	public float ConstantFieldIntensity = 2f;
-
 	public Vector3 ConstantFieldDirection = Vector3.one;
 
 	[Range(0.0001f, 0.1f)]

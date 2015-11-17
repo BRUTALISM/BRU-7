@@ -6,6 +6,7 @@ public class CloudGenerator : MonoBehaviour
 {
 	#region Editor public fields
 
+	public RandomSeedGenerator SeedGenerator;
 	public Axis AxisOfSymmetry = Axis.YZ;
 	public int InitialBatches = 1;
 	public int PointsPerBatch = 5;
@@ -37,8 +38,7 @@ public class CloudGenerator : MonoBehaviour
 
 	void Start()
 	{
-		var seedGenerator = GetComponent<RandomSeedGenerator>();
-		seedGenerator.Seeds.Subscribe(seed =>
+		SeedGenerator.Seeds.Subscribe(seed =>
 		{
 			Nasum.Seed = seed;
 			lastBatchCenter = Vector3.zero;
