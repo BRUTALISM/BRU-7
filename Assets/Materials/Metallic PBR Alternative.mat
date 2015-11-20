@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Color Detail
+  m_Name: Metallic PBR Alternative
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
@@ -78,13 +78,6 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _Illum
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -100,10 +93,6 @@ Material:
         second: .5
       data:
         first:
-          name: _Shininess
-        second: .100000001
-      data:
-        first:
           name: _Parallax
         second: .0199999996
       data:
@@ -113,7 +102,7 @@ Material:
       data:
         first:
           name: _Glossiness
-        second: .5
+        second: .187000006
       data:
         first:
           name: _BumpScale
@@ -137,29 +126,13 @@ Material:
       data:
         first:
           name: _Metallic
-        second: 0
-      data:
-        first:
-          name: _Emission
-        second: 0
-      data:
-        first:
-          name: _AnimationDuration
-        second: .5
+        second: .365999997
     m_Colors:
       data:
         first:
           name: _EmissionColor
-        second: {r: 1, g: 0, b: .351724148, a: 1}
+        second: {r: .67733562, g: .845674694, b: .852941155, a: 1}
       data:
         first:
           name: _Color
-        second: {r: 0, g: 0, b: 0, a: 1}
-      data:
-        first:
-          name: _SpecColor
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _Emission
-        second: {r: 0, g: 0, b: 0, a: 0}
+        second: {r: .220588207, g: .220588207, b: .220588207, a: 1}

@@ -47,7 +47,8 @@ public class RandomSeedGenerator : MonoBehaviour
 
 	private void ProcessNewInput(string input)
 	{
-		if ((int)input[0] == 8)
+		var inputChar = input[0];
+		if ((int)inputChar == 8)
 		{
 			if (seedString.Length > 0)
 			{
@@ -55,10 +56,14 @@ public class RandomSeedGenerator : MonoBehaviour
 				seedString = seedString.Substring(0, seedString.Length - 1);
 			}
 		}
+		else if (!char.IsLetterOrDigit(inputChar) && !char.IsWhiteSpace(inputChar))
+		{
+			return;
+		}
 		else
 		{
 			// Append new input
-			seedString += input;
+			seedString += inputChar;
 		}
 
 		var seed = SeedWhenEmpty;

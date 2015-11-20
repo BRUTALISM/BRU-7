@@ -12,15 +12,18 @@ public class Point : IPosition
 
 	public float CreationTime { get; protected set; }
 
+	public Color Color { get; set; }
+
 	#endregion
 
 	#region Private fields
 	#endregion
 
-	public Point(Vector3 position, float weight)
+	public Point(Vector3 position, float weight, Color color = default(Color))
 	{
 		Position = position;
 		Weight = Mathf.Clamp01(weight);
 		CreationTime = SafeTime.Instance.Time;
+		Color = color;
 	}
 }
