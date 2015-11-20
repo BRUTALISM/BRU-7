@@ -36,6 +36,18 @@ public class Orbit : MonoBehaviour
 
 	void Update()
 	{
+		#if UNITY_EDITOR
+		const float KeyboardRotationPerFrame = 2f;
+		const float DistanceZoomPerFrame = 2f;
+		if (Input.GetKey(KeyCode.LeftArrow)) rotationOffset *= Quaternion.Euler(0f, -KeyboardRotationPerFrame, 0f);
+		if (Input.GetKey(KeyCode.RightArrow)) rotationOffset *= Quaternion.Euler(0f, KeyboardRotationPerFrame, 0f);
+		if (Input.GetKey(KeyCode.UpArrow)) rotationOffset *= Quaternion.Euler(-KeyboardRotationPerFrame, 0f, 0f);
+		if (Input.GetKey(KeyCode.DownArrow)) rotationOffset *= Quaternion.Euler(KeyboardRotationPerFrame, 0f, 0f);
+		if (Input.GetKeyDown(KeyCode.R)) rotationOffset = Quaternion.identity;
+		if (Input.GetKey(KeyCode.Equals)) distanceFromOrigin -= DistanceZoomPerFrame;
+		if (Input.GetKey(KeyCode.Minus)) distanceFromOrigin += DistanceZoomPerFrame;
+		#endif
+
 		var gyroRotation = rotationOffset * ConvertRotation(Input.gyro.attitude);
 
 		transform.position = Vector3.zero;
