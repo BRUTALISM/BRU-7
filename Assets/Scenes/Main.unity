@@ -258,10 +258,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SeedGenerator: {fileID: 1215265777}
-  SaturationMinimum: 1
-  SaturationMaximum: 1
-  BackgroundValueMinimum: .100000001
-  BackgroundValueMaximum: .899999976
+  SaturationForAllColors: 1
+  ValueForAllColors: .800000012
   NumberOfHuesMinimum: 3
   NumberOfHuesMaximum: 5
   TotalColorsMin: 5
@@ -647,9 +645,9 @@ MonoBehaviour:
   PointsPerBatch: 7
   NewBatchInterval: .100000001
   Extent: 10
-  MaxDistanceToPreviousBatch: 4
-  DistanceToPreviousBatchScale: {x: 1, y: .5, z: 1}
-  MaxDistanceToPreviousPoint: 10
+  MaxDistanceToPreviousBatch: 6
+  DistanceToPreviousBatchScale: {x: 1, y: .200000003, z: 1}
+  MaxDistanceToPreviousPoint: 8
   StartingPointWeight: 1
 --- !u!4 &1368822832
 Transform:

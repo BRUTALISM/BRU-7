@@ -28,10 +28,8 @@ public class Farb : MonoBehaviour
 	#region Editor public fields
 
 	public RandomSeedGenerator SeedGenerator;
-	public float SaturationMinimum;
-	public float SaturationMaximum = 1f;
-	public float BackgroundValueMinimum = 0.1f;
-	public float BackgroundValueMaximum = 0.9f;
+	public float SaturationForAllColors = 1f;
+	public float ValueForAllColors = 0.82f;
 	public int NumberOfHuesMinimum = 1;
 	public int NumberOfHuesMaximum = 5;
 	public int TotalColorsMin = 5;
@@ -90,33 +88,14 @@ public class Farb : MonoBehaviour
 		Color currentColor = seed;
 		for (int i = 0; i < totalColorCount; i++)
 		{
-			if (i % numberOfHues == 0)
-			{
-				hueOffset = 0f;
-				currentSaturation = Nasum.Range(SaturationMinimum, SaturationMaximum);
-			}
+			if (i % numberOfHues == 0) hueOffset = 0f;
 
 			currentColor = currentColor
 				.SetHue((originalHue + hueOffset).Fract())
-				.SetSaturation(currentSaturation)
-				.SetValue(1f);
-
-			if (i == Pal.BackgroundColorIndex)
-			{
-				currentColor = currentColor.SetValue(Nasum.Range(BackgroundValueMinimum, BackgroundValueMaximum));
-			}
-
-			if (numberOfHues > 1 &&
-				i > Pal.BackgroundColorIndex &&
-				Mathf.Approximately(currentColor.ToHSV().h, colors[Pal.BackgroundColorIndex].ToHSV().h))
-			{
-				// The currently generated color has the same hue as the background color, skip it
-				i--;
-			}
-			else
-			{
-				colors.Add(currentColor);
-			}
+				.SetSaturation(SaturationForAllColors)
+				.SetValue(ValueForAllColors);
+			
+			colors.Add(currentColor);
 
 			hueOffset += hueStep;
 		}
