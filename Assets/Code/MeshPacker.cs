@@ -5,21 +5,23 @@ using UniRx;
 public class MeshPacker : MonoBehaviour
 {
 	#region Editor public fields
-
-	public Material MeshMaterial;
-
 	#endregion
 
 	#region Public properties
+
+	public IObservable<List<GameObject>> GeneratedChildren { get { return generatedChildrenSubject; } }
+
 	#endregion
 
 	#region Private fields
 
-	private Queue<PartialMesh> partialMeshes = new Queue<PartialMesh>();
+	private List<PartialMesh> partialMeshes = new List<PartialMesh>();
 
 	private List<GameObject> children = null;
 
 	private int partialMeshesInWindow = 0;
+
+	private Subject<List<GameObject>> generatedChildrenSubject = new Subject<List<GameObject>>();
 
 	#endregion
 
@@ -39,25 +41,29 @@ public class MeshPacker : MonoBehaviour
 
 	private void PackMesh(PartialMesh newPartialMesh)
 	{
-		partialMeshes.Enqueue(newPartialMesh);
+		partialMeshes.Add(newPartialMesh);
 
-		if (partialMeshes.Count > partialMeshesInWindow) partialMeshes.Dequeue();
-
-		var meshBuilder = new MeshBuilder();
-		foreach (var partialMesh in partialMeshes) meshBuilder.Pack(partialMesh);
-
-		var meshes = meshBuilder.Build();
-		foreach (var mesh in meshes) mesh.RecalculateNormals();
-
-		if (children != null)
+		if (partialMeshes.Count == partialMeshesInWindow)
 		{
-			foreach (var child in children) Destroy(child);
-		}
+			var meshBuilder = new MeshBuilder();
+			foreach (var partialMesh in partialMeshes) meshBuilder.Pack(partialMesh);
+			
+			var meshes = meshBuilder.Build();
+			foreach (var mesh in meshes) mesh.RecalculateNormals();
+			
+			if (children != null)
+			{
+				foreach (var child in children) Destroy(child);
+			}
+			
+			children = CreateChildrenForMeshes(meshes, this.gameObject);
+			partialMeshes.Clear();
 
-		children = CreateChildrenForMeshes(meshes, this.gameObject, MeshMaterial);
+			generatedChildrenSubject.OnNext(children);
+		}
 	}
 
-	public List<GameObject> CreateChildrenForMeshes(IEnumerable<Mesh> meshes, GameObject parent, Material material,
+	public List<GameObject> CreateChildrenForMeshes(IEnumerable<Mesh> meshes, GameObject parent,
 		System.Action<GameObject> onEachChild = null)
 	{
 		var generatedChildren = new List<GameObject>();
@@ -67,12 +73,10 @@ public class MeshPacker : MonoBehaviour
 			meshGameObject.transform.SetParent(parent.transform, false);
 
 			var meshRenderer = meshGameObject.AddComponent<MeshRenderer>();
-			meshRenderer.sharedMaterial = material;
 			meshRenderer.receiveShadows = false;
 			meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
 			meshGameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
-//			meshGameObject.AddComponent<MeshCollider>().sharedMesh = mesh;
 
 			if (onEachChild != null) onEachChild(meshGameObject);
 

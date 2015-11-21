@@ -43,4 +43,9 @@ public static class Nasum
 	{
 		return min + Value * (max - min);
 	}
+
+	public static int Range(int min, int max)
+	{
+		return min + (int)(Value * (max - min - 1));
+	}
 }

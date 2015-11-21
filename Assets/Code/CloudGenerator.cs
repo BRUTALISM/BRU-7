@@ -40,7 +40,6 @@ public class CloudGenerator : MonoBehaviour
 	{
 		SeedGenerator.Seeds.Subscribe(seed =>
 		{
-			Nasum.Seed = seed;
 			lastBatchCenter = Vector3.zero;
 			InitialBatches.Times(_ => pointBatches.OnNext(NewBatch()));
 		}).AddTo(this);

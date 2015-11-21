@@ -38,6 +38,7 @@ public class RandomSeedGenerator : MonoBehaviour
 			.AddTo(this);
 
 		// Fire out an initial seed, to start the pipeline
+		Nasum.Seed = SeedWhenEmpty;
 		seedsSubject.OnNext(SeedWhenEmpty);
 	}
 
@@ -71,9 +72,13 @@ public class RandomSeedGenerator : MonoBehaviour
 		{
 			seed = seedString.AsSafeEnumerable().Aggregate(SeedWhenEmpty, (acc, c) => acc * (1 + (int)c));
 		}
-		seedsSubject.OnNext(seed);
 
-		Debug.LogFormat("---[ {0} => {1} ] ---", seedString.Length > 0 ? seedString : "EMPTY", seed);
+		// Set the global seed
+		Nasum.Seed = seed;
+
+		Debug.LogFormat("[ {0} ] => [ {1} ]", seedString.Length > 0 ? seedString : "EMPTY", seed);
+
+		seedsSubject.OnNext(seed);
 	}
 
 	#endregion

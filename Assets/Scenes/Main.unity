@@ -98,6 +98,7 @@ GameObject:
   - 114: {fileID: 17091705}
   - 114: {fileID: 17091704}
   - 114: {fileID: 17091703}
+  - 114: {fileID: 17091706}
   m_Layer: 0
   m_Name: Color Detail Generator
   m_TagString: Untagged
@@ -155,7 +156,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 6
 --- !u!114 &17091703
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,7 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: 199c151e1df004beebe6ed5f21dc8d40, type: 2}
 --- !u!114 &17091704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,6 +192,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d49389cd9154d26880b71acad836ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &17091706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 17091699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de5806c747064c88bd7950d37275e9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MeshMaterial: {fileID: 2100000, guid: 199c151e1df004beebe6ed5f21dc8d40, type: 2}
+  MaterialColorProperty: _EmissionColor
+  PaletteColorIndex: 2
 --- !u!1 &259567176
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +215,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 259567178}
   - 114: {fileID: 259567177}
+  - 114: {fileID: 259567179}
   m_Layer: 0
   m_Name: SINGLETONS
   m_TagString: Untagged
@@ -231,6 +246,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &259567179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 259567176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82c4c1743cc194a228eb6b002a505ff1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SeedGenerator: {fileID: 1215265777}
+  SaturationMinimum: 1
+  SaturationMaximum: 1
+  BackgroundValueMinimum: .100000001
+  BackgroundValueMaximum: .899999976
+  NumberOfHuesMinimum: 3
+  NumberOfHuesMaximum: 5
+  TotalColorsMin: 5
+  TotalColorsMax: 10
+  HueAngleIncrement: 15
 --- !u!1 &891532184
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,6 +281,7 @@ GameObject:
   - 114: {fileID: 891532185}
   - 114: {fileID: 891532191}
   - 114: {fileID: 891532190}
+  - 114: {fileID: 891532192}
   m_Layer: 0
   m_Name: Main Body Generator
   m_TagString: Untagged
@@ -296,7 +333,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
 --- !u!114 &891532188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,7 +374,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: ed87b6e9485ff4a18b0bbd683d2d3bd1, type: 2}
 --- !u!114 &891532191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,6 +387,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FlatShadedVertices: 1
   RunOnSeparateThread: 0
+--- !u!114 &891532192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 891532184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de5806c747064c88bd7950d37275e9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MeshMaterial: {fileID: 2100000, guid: ed87b6e9485ff4a18b0bbd683d2d3bd1, type: 2}
+  MaterialColorProperty: _EmissionColor
+  PaletteColorIndex: 0
 --- !u!1 &996138632
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,7 +487,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 1
 --- !u!114 &996138638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -492,7 +542,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
 --- !u!1 &1368822825
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,6 +557,7 @@ GameObject:
   - 114: {fileID: 1368822828}
   - 114: {fileID: 1368822827}
   - 114: {fileID: 1368822826}
+  - 114: {fileID: 1368822833}
   m_Layer: 0
   m_Name: Alternative Body Generator
   m_TagString: Untagged
@@ -525,7 +576,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: 469fd62ee87304d0a839b7caf8c344d5, type: 2}
 --- !u!114 &1368822827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,7 +662,21 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
+--- !u!114 &1368822833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1368822825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de5806c747064c88bd7950d37275e9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MeshMaterial: {fileID: 2100000, guid: 469fd62ee87304d0a839b7caf8c344d5, type: 2}
+  MaterialColorProperty: _EmissionColor
+  PaletteColorIndex: 1
 --- !u!1 &1674025698
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,4 +736,4 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 2

@@ -1,0 +1,153 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+using UniRx;
+
+/// <summary>
+/// Palette generator.
+/// </summary>
+public class Farb : MonoBehaviour
+{
+	#region Singleton
+
+	private static Farb scenestance;
+	public static Farb Scenestance
+	{
+		get
+		{
+			if (scenestance == null)
+			{
+				scenestance = FindObjectOfType<Farb>();
+			}
+
+			return scenestance;
+		}
+	}
+
+	#endregion
+
+	#region Editor public fields
+
+	public RandomSeedGenerator SeedGenerator;
+	public float SaturationMinimum;
+	public float SaturationMaximum = 1f;
+	public float BackgroundValueMinimum = 0.1f;
+	public float BackgroundValueMaximum = 0.9f;
+	public int NumberOfHuesMinimum = 1;
+	public int NumberOfHuesMaximum = 5;
+	public int TotalColorsMin = 5;
+	public int TotalColorsMax = 10;
+	public float HueAngleIncrement = 15f;
+
+	#endregion
+
+	#region Public properties
+
+	public IObservable<Pal> Palettes { get { return palettes; } }
+
+	#endregion
+
+	#region Private data
+
+	private Subject<Pal> palettes = new Subject<Pal>();
+
+	#endregion
+
+	#region Unity methods
+
+	void Start()
+	{
+		SeedGenerator.Seeds.Subscribe(GenerateNewPalette).AddTo(this);
+	}
+
+	#endregion
+
+	#region Palete generation
+
+	private void GenerateNewPalette(int seed)
+	{
+		var seedColor = SeedToColor(seed);
+
+		int totalColorCount = Nasum.Range(TotalColorsMin, TotalColorsMax + 1);
+
+		int AngleStepsMax = Mathf.RoundToInt(360f / HueAngleIncrement);
+		float hueAngle = HueAngleIncrement * Nasum.Range(1, AngleStepsMax);
+
+		int numberOfHues = Nasum.Range(NumberOfHuesMinimum, NumberOfHuesMaximum + 1);
+
+//		Debug.LogFormat("Palette[ {3} ]: hues={1}, angle={0}, colors={2}", hueAngle, numberOfHues, totalColorCount, seed);
+
+		palettes.OnNext(new Pal(HueAngleVariation(seedColor, hueAngle, numberOfHues, totalColorCount)));
+	}
+
+	private IEnumerable<Color> HueOffsetVariation(Color seed, float hueStep, int numberOfHues, int totalColorCount)
+	{
+		var colors = new List<Color>(totalColorCount);
+
+		float hueOffset = 0f;
+		float currentSaturation = 0f;
+		float originalHue = seed.ToHSV().h;
+
+		Color currentColor = seed;
+		for (int i = 0; i < totalColorCount; i++)
+		{
+			if (i % numberOfHues == 0)
+			{
+				hueOffset = 0f;
+				currentSaturation = Nasum.Range(SaturationMinimum, SaturationMaximum);
+			}
+
+			currentColor = currentColor
+				.SetHue((originalHue + hueOffset).Fract())
+				.SetSaturation(currentSaturation)
+				.SetValue(1f);
+
+			if (i == Pal.BackgroundColorIndex)
+			{
+				currentColor = currentColor.SetValue(Nasum.Range(BackgroundValueMinimum, BackgroundValueMaximum));
+			}
+
+			if (numberOfHues > 1 &&
+				i > Pal.BackgroundColorIndex &&
+				Mathf.Approximately(currentColor.ToHSV().h, colors[Pal.BackgroundColorIndex].ToHSV().h))
+			{
+				// The currently generated color has the same hue as the background color, skip it
+				i--;
+			}
+			else
+			{
+				colors.Add(currentColor);
+			}
+
+			hueOffset += hueStep;
+		}
+
+		return colors;
+	}
+
+	private IEnumerable<Color> HueAngleVariation(Color seed, float angle, int numberOfHues, int count)
+	{
+		return HueOffsetVariation(seed, angle / 360f, numberOfHues, count);
+	}
+
+	#endregion
+
+	#region Helpers
+
+	private Color SeedToColor(int seed)
+	{
+		const int RFactor = 347562;
+		const int GFactor = 382;
+		const int BFactor = 20244;
+		Color seedColor = new Color(((float)(seed % RFactor)) / RFactor, ((float)(seed % GFactor)) / GFactor,
+			((float)(seed % BFactor)) / BFactor);
+
+		// Crank up value to 1
+		Colors.HSV seedHSV = seedColor.ToHSV();
+		seedHSV.v = 1f;
+		seedColor = Colors.FromHSV(seedHSV);
+
+		return seedColor;
+	}
+
+	#endregion
+}
