@@ -43,7 +43,7 @@ public class RandomSeedGenerator : MonoBehaviour
 		var seed = SeedWhenEmpty;
 		if (currentInput.Length > 0)
 		{
-			seed = currentInput.AsSafeEnumerable().Aggregate(SeedWhenEmpty, (acc, c) => acc * (1 + (int)c));
+			seed = currentInput.AsSafeEnumerable().Aggregate(SeedWhenEmpty, (acc, c) => acc + (SeedWhenEmpty * (int)c));
 		}
 
 		Debug.LogFormat("[ {0} ] => [ {1} ]", currentInput.Length > 0 ? currentInput : "EMPTY", seed);
