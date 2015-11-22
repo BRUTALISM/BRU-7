@@ -8,7 +8,8 @@ public class Sidekick : MonoBehaviour, IDragHandler, IEndDragHandler
 	#region Editor public fields
 
 	public ScreenSide Side;
-	public GameObject Spacer;
+	public CanvasGroup Content;
+	public float EdgeOffset = 20f;
 	public float DragThreshold;
 	public float DragAnimationDuration;
 
@@ -25,7 +26,6 @@ public class Sidekick : MonoBehaviour, IDragHandler, IEndDragHandler
 	private RectTransform rectTransform;
 	private ScreenOrientation currentOrientation;
 
-	private float edgeOffset;
 	private Vector2 hiddenPosition;
 
 	private ScreenSide swipeDirection;
@@ -39,12 +39,11 @@ public class Sidekick : MonoBehaviour, IDragHandler, IEndDragHandler
 		rectTransform = GetComponent<RectTransform>();
 		currentOrientation = Screen.orientation;
 
-		edgeOffset = Spacer.GetComponent<LayoutElement>().minWidth;
-
-		if (Side == ScreenSide.Left) hiddenPosition = new Vector2(-Camera.main.pixelWidth + edgeOffset, 0f);
-		else hiddenPosition = new Vector2(Camera.main.pixelWidth - edgeOffset, 0f);
+		if (Side == ScreenSide.Left) hiddenPosition = new Vector2(-Camera.main.pixelWidth + EdgeOffset, 0f);
+		else hiddenPosition = new Vector2(Camera.main.pixelWidth - EdgeOffset, 0f);
 
 		RepositionOnTheSide();
+		ResetContentAlpha();
 	}
 
 	void Update()
@@ -75,10 +74,21 @@ public class Sidekick : MonoBehaviour, IDragHandler, IEndDragHandler
 		{
 			float t = Mathf.SmoothStep(0f, 1f, (Time.time - startTime) / DragAnimationDuration);
 			rectTransform.anchoredPosition = Vector2.Lerp(startPosition, endPosition, t);
+			ResetContentAlpha();
 			yield return null;
 		}
 
 		rectTransform.anchoredPosition = endPosition;
+		ResetContentAlpha();
+	}
+
+	private void ResetContentAlpha()
+	{
+		var hiddenX = hiddenPosition.x;
+		var shownX = 0f;
+		var t = Mathf.InverseLerp(hiddenX, shownX, rectTransform.anchoredPosition.x);
+
+		Content.alpha = t;
 	}
 
 	#endregion
@@ -96,6 +106,8 @@ public class Sidekick : MonoBehaviour, IDragHandler, IEndDragHandler
 		rectTransform.anchoredPosition = new Vector2(newX, rectTransform.anchoredPosition.y);
 
 		swipeDirection = draggedX > 0f ? ScreenSide.Right : ScreenSide.Left;
+
+		ResetContentAlpha();
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
