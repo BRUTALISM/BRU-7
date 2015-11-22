@@ -401,6 +401,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460bc29ed80e3468e81ce763fc3adbe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Keyboard: {fileID: 53373288}
+  CurrentInputText: {fileID: 712317402}
 --- !u!1 &291565571
 GameObject:
   m_ObjectHideFlags: 0
@@ -624,7 +626,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: brutalism
+  m_Text: 
 --- !u!222 &712317403
 CanvasRenderer:
   m_ObjectHideFlags: 0

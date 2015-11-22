@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using UniRx;
 
 public class StringInput : MonoBehaviour
 {
 	#region Editor public fields
+
+	public VirtualKeyboard Keyboard;
+	public Text CurrentInputText;
+
 	#endregion
 
 	#region Public properties
@@ -32,6 +37,16 @@ public class StringInput : MonoBehaviour
 			.Select(_ => Input.inputString[0])
 			.Subscribe(ProcessNewInput)
 			.AddTo(this);
+
+		if (Keyboard != null)
+		{
+			Keyboard.KeyPresses.Subscribe(ProcessNewInput).AddTo(this);
+		}
+
+		if (CurrentInputText != null)
+		{
+			CurrentInputText.text = currentInputString;
+		}
 	}
 
 	#endregion
@@ -45,7 +60,7 @@ public class StringInput : MonoBehaviour
 
 	private void ProcessNewInput(char input)
 	{
-		if ((int)input == 8)
+		if ((int)input == 8 || input == VirtualKeyboard.BackspaceCharacter)
 		{
 			if (currentInputString.Length > 0)
 			{
@@ -61,6 +76,11 @@ public class StringInput : MonoBehaviour
 		{
 			// Append new input
 			currentInputString += input;
+		}
+
+		if (CurrentInputText != null)
+		{
+			CurrentInputText.text = currentInputString;
 		}
 
 		inputStringSubject.OnNext(currentInputString);

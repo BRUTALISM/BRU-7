@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UniRx;
 
 public class VirtualKeyboard : MonoBehaviour
 {
@@ -13,6 +14,11 @@ public class VirtualKeyboard : MonoBehaviour
 	#endregion
 
 	#region Public properties
+
+	public IObservable<char> KeyPresses { get { return keyPressesSubject; } }
+
+	public static readonly char BackspaceCharacter = '⌫';
+
 	#endregion
 
 	#region Private fields
@@ -21,9 +27,11 @@ public class VirtualKeyboard : MonoBehaviour
 	{
 		"qwertyuiop",
 		"_asdfghjkl_",
-		"__zxcvbnm_⌫",
+		"__zxcvbnm_" + BackspaceCharacter,
 		" "
 	};
+
+	private Subject<char> keyPressesSubject = new Subject<char>();
 
 	#endregion
 
@@ -40,15 +48,34 @@ public class VirtualKeyboard : MonoBehaviour
 				var letterObject = Instantiate(SingleKeyPrefab);
 				letterObject.transform.SetParent(currentRow.transform, false);
 
-				if (letter != '_')
+				var keyboardButton = letterObject.GetComponent<KeyboardButton>();
+				keyboardButton.Keyboard = this;
+
+				if (letter == '_')
+				{
+					letterObject.GetComponent<Button>().interactable = false;
+				}
+				else
 				{
 					var displayString = letter.ToString();
 					if (letter == ' ') displayString = "space";
 
 					letterObject.GetComponentInChildren<Text>().text = displayString;
+
+					keyboardButton.Key = letter;
 				}
 			}
 		}
+	}
+
+	#endregion
+
+	#region Key handling
+
+	public void KeyPress(char key)
+	{
+		Debug.Log(key.ToString());
+		keyPressesSubject.OnNext(key);
 	}
 
 	#endregion
