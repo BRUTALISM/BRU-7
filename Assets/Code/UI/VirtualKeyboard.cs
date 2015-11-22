@@ -74,7 +74,6 @@ public class VirtualKeyboard : MonoBehaviour
 
 	public void KeyPress(char key)
 	{
-		Debug.Log(key.ToString());
 		keyPressesSubject.OnNext(key);
 	}
 

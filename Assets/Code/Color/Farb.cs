@@ -113,9 +113,15 @@ public class Farb : MonoBehaviour
 
 	private Color SeedToColor(int seed)
 	{
-		const int RFactor = 347562;
+		// Take the absolute value of the seed
+		seed = seed == int.MinValue ? int.MaxValue : Mathf.Abs(seed);
+
+		// Randomly chosen constants to be used for mod operations
+		const int RFactor = 34752;
 		const int GFactor = 382;
 		const int BFactor = 20244;
+
+		// Make a color, component-wise
 		Color seedColor = new Color(((float)(seed % RFactor)) / RFactor, ((float)(seed % GFactor)) / GFactor,
 			((float)(seed % BFactor)) / BFactor);
 
