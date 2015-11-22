@@ -383,8 +383,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SeedGenerator: {fileID: 1215265777}
-  SaturationForAllColors: .200000003
-  ValueForAllColors: 0
+  SaturationForAllColors: .899999976
+  ValueForAllColors: .800000012
   NumberOfHuesMinimum: 3
   NumberOfHuesMaximum: 5
   TotalColorsMin: 5
@@ -616,7 +616,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 4fb317c8c66e34b809d1036787dbe68a, type: 3}
-    m_FontSize: 48
+    m_FontSize: 56
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
