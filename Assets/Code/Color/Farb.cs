@@ -82,7 +82,6 @@ public class Farb : MonoBehaviour
 		var colors = new List<Color>(totalColorCount);
 
 		float hueOffset = 0f;
-		float currentSaturation = 0f;
 		float originalHue = seed.ToHSV().h;
 
 		Color currentColor = seed;
