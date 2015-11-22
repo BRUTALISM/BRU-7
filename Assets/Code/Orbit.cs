@@ -13,12 +13,14 @@ public class Orbit : MonoBehaviour
 	#endregion
 
 	#region Public properties
+
+	public float DistanceFromOrigin { get; set; }
+
 	#endregion
 
 	#region Private fields
 
 	private Quaternion rotationOffset;
-	private float distanceFromOrigin;
 
 	#endregion
 
@@ -31,7 +33,7 @@ public class Orbit : MonoBehaviour
 		#else
 		rotationOffset = Quaternion.Euler(90f, 0f, 0f);
 		#endif
-		distanceFromOrigin = transform.position.magnitude;
+		DistanceFromOrigin = transform.position.magnitude;
 	}
 
 	void Update()
@@ -44,8 +46,8 @@ public class Orbit : MonoBehaviour
 		if (Input.GetKey(KeyCode.UpArrow)) rotationOffset *= Quaternion.Euler(-KeyboardRotationPerFrame, 0f, 0f);
 		if (Input.GetKey(KeyCode.DownArrow)) rotationOffset *= Quaternion.Euler(KeyboardRotationPerFrame, 0f, 0f);
 		if (Input.GetKeyDown(KeyCode.R)) rotationOffset = Quaternion.identity;
-		if (Input.GetKey(KeyCode.Equals)) distanceFromOrigin -= DistanceZoomPerFrame;
-		if (Input.GetKey(KeyCode.Minus)) distanceFromOrigin += DistanceZoomPerFrame;
+		if (Input.GetKey(KeyCode.Equals)) DistanceFromOrigin -= DistanceZoomPerFrame;
+		if (Input.GetKey(KeyCode.Minus)) DistanceFromOrigin += DistanceZoomPerFrame;
 		#endif
 
 		var gyroRotation = rotationOffset * ConvertRotation(Input.gyro.attitude);
@@ -60,7 +62,7 @@ public class Orbit : MonoBehaviour
 		}
 		transform.rotation = rotation;
 
-		transform.position = -transform.forward * distanceFromOrigin;
+		transform.position = -transform.forward * DistanceFromOrigin;
 	}
 
 	#endregion
