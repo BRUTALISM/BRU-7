@@ -9,6 +9,7 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 
 	public string FilenamePrefix = "BRU-7-";
 	public int ScreenshotScale = 2;
+	public GameObject SaveOverlayPrefab;
 
 	#endregion
 
@@ -45,12 +46,12 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 
 	public void OnPointerUp(PointerEventData eventData)
 	{
-		#if UNITY_IOS && !UNITY_EDITOR
 		if (!eventData.dragging)
 		{
+			#if UNITY_IOS && !UNITY_EDITOR
 			if (CheckPermissions())
 			{
-				CaptureScreenshot();
+				StartCoroutine(CaptureScreenshot());
 			}
 			else
 			{
@@ -58,16 +59,22 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 				// FIXME: Implement.
 				AskPermissions();
 			}
+			#elif UNITY_EDITOR
+			StartCoroutine(CaptureScreenshot());
+			#endif
 		}
-		#endif
 	}
 
 	#endregion
 
 	#region Screenshot capture
 
-	private void CaptureScreenshot()
+	private System.Collections.IEnumerator CaptureScreenshot()
 	{
+		var saveOverlay = Instantiate(SaveOverlayPrefab);
+
+		yield return new WaitForSeconds(0.1f);
+
 		var filename = string.Format("{0}/{1}{2}.png", Application.persistentDataPath, FilenamePrefix, GetTimestamp());
 
 		var targetWidth = Camera.main.pixelWidth * ScreenshotScale;
@@ -88,9 +95,13 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 		byte[] bytes = screenShot.EncodeToPNG();
 		System.IO.File.WriteAllBytes(filename, bytes);
 
-		Debug.Log(string.Format("Took screenshot to: {0}", filename));
-
+		#if UNITY_IOS && !UNITY_EDITOR
 		SaveScreenshotToAlbum(filename);
+		#endif
+
+		Debug.LogFormat("Saved screenshot to: {0}", filename);
+
+		Destroy(saveOverlay);
 	}
 
 	private string GetTimestamp()

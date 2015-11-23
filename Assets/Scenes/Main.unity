@@ -939,6 +939,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FilenamePrefix: BRU-7-
   ScreenshotScale: 2
+  SaveOverlayPrefab: {fileID: 129978, guid: c9ed7fb1aa4d54903a17014de250a233, type: 2}
 --- !u!114 &903805387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1016,7 +1017,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967039
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
