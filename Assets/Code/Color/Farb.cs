@@ -74,7 +74,7 @@ public class Farb : MonoBehaviour
 
 //		Debug.LogFormat("Palette[ {3} ]: hues={1}, angle={0}, colors={2}", hueAngle, numberOfHues, totalColorCount, seed);
 
-		palettes.OnNext(new InfinitePalette(HueAngleVariation(seedColor, hueAngle, numberOfHues, totalColorCount)));
+//		palettes.OnNext(new InfinitePalette(HueAngleVariation(seedColor, hueAngle, numberOfHues, totalColorCount)));
 	}
 
 	private IEnumerable<Color> HueOffsetVariation(Color seed, float hueStep, int numberOfHues, int totalColorCount)

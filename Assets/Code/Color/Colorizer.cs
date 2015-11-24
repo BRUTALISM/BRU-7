@@ -37,7 +37,7 @@ public class Colorizer : MonoBehaviour
 	private void Colorize(InfinitePalette palette, List<GameObject> objects)
 	{
 		var meshMaterial = new Material(MeshMaterial);
-		meshMaterial.SetColor(MaterialColorProperty, palette[PaletteColorIndex]);
+//		meshMaterial.SetColor(MaterialColorProperty, palette[PaletteColorIndex]);
 
 		foreach (var renderer in objects.Select(o => o.GetComponent<MeshRenderer>()))
 		{
