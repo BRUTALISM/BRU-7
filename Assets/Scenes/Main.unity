@@ -1052,8 +1052,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RotationLerpFactor: .5
   XRotation: 1
-  YRotation: 0
-  ZRotation: 0
+  YRotation: 1
+  ZRotation: 1
 --- !u!1 &1054191297
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// A palette.
 /// </summary>
-public class Pal
+public class InfinitePalette
 {
 	#region Public
 
@@ -46,7 +46,7 @@ public class Pal
 
 	#region Initialization
 
-	public Pal(IEnumerable<Color> colors)
+	public InfinitePalette(IEnumerable<Color> colors)
 	{
 		this.colors = new List<Color>(colors);
 	}

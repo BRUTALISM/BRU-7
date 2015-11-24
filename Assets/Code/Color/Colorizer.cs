@@ -34,7 +34,7 @@ public class Colorizer : MonoBehaviour
 
 	#region Coloring
 
-	private void Colorize(Pal palette, List<GameObject> objects)
+	private void Colorize(InfinitePalette palette, List<GameObject> objects)
 	{
 		var meshMaterial = new Material(MeshMaterial);
 		meshMaterial.SetColor(MaterialColorProperty, palette[PaletteColorIndex]);

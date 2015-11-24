@@ -40,13 +40,13 @@ public class Farb : MonoBehaviour
 
 	#region Public properties
 
-	public IObservable<Pal> Palettes { get { return palettes; } }
+	public IObservable<InfinitePalette> Palettes { get { return palettes; } }
 
 	#endregion
 
 	#region Private data
 
-	private Subject<Pal> palettes = new Subject<Pal>();
+	private Subject<InfinitePalette> palettes = new Subject<InfinitePalette>();
 
 	#endregion
 
@@ -74,7 +74,7 @@ public class Farb : MonoBehaviour
 
 //		Debug.LogFormat("Palette[ {3} ]: hues={1}, angle={0}, colors={2}", hueAngle, numberOfHues, totalColorCount, seed);
 
-		palettes.OnNext(new Pal(HueAngleVariation(seedColor, hueAngle, numberOfHues, totalColorCount)));
+		palettes.OnNext(new InfinitePalette(HueAngleVariation(seedColor, hueAngle, numberOfHues, totalColorCount)));
 	}
 
 	private IEnumerable<Color> HueOffsetVariation(Color seed, float hueStep, int numberOfHues, int totalColorCount)
