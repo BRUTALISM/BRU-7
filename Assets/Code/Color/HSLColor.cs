@@ -15,7 +15,7 @@ public struct HSLColor
 	#region Private fields
 	#endregion
 
-	#region UnityEngine.Color conversion operators
+	#region UnityEngine.Color implicit conversion operators
 
 	public static implicit operator Color(HSLColor hsl)
 	{

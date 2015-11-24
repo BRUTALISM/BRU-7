@@ -65,6 +65,11 @@ public class InfinitePalette
 		/// </summary>
 		public LightnessAffinity LightnessAffinity;
 
+		/// <summary>
+		/// The number of primary colors to generate.
+		/// </summary>
+		public int PrimaryColorCount;
+
 		// +--------------------------+
 		// | Derived color parameters |
 		// +--------------------------+
@@ -75,12 +80,19 @@ public class InfinitePalette
 		public ColumnIterationAffinity ColumnIterationAffinity;
 
 		/// <summary>
-		/// The maximum distance (in normalized cylindrical coordinates) a derived point can be away from its source primary point.
+		/// How much the column affinity is taken into account when selecting columns, in the [0, 1] range. A zero value means that the
+		/// affinity will be ignored (effectively reducing column selection to a random choice), while a value of 1 will always select the
+		/// column with the highest preference, ignoring other columns. The Truth is somewhere between 0 and 1.
+		/// </summary>
+		public float ColumnAffinityIntensity;
+
+		/// <summary>
+		/// The maximum distance (in normalized HSL cylindrical coordinates) a derived point can be away from its source primary point.
 		/// </summary>
 		public float WanderMax;
 
-		// These values control the magnitude of the offset vector (in cylindrical space) from the current color to the color about to be
-		// generated next.
+		// The three values below control the magnitude of the offset vector (in cylindrical space) from the current color to the color
+		// about to be generated next.
 
 		/// <summary>
 		/// The maximum value a hue component of the offset vector can have.
@@ -105,13 +117,29 @@ public class InfinitePalette
 	/// <summary>
 	/// An infinite sequence of colors, generated on demand.
 	/// </summary>
-	/// <value>The colors.</value>
 	public IEnumerable<HSLColor> Colors
 	{
 		get
 		{
-			// FIXME: Implement.
-			throw new System.NotImplementedException();
+			if (primaries.Count < parameters.PrimaryColorCount)
+			{
+				var newColor = GeneratePrimaryColor();
+				primaries.Add(newColor);
+				currentColorsByColumn.Add(newColor);
+
+				if (primaries.Count == parameters.PrimaryColorCount) SelectNextColumn();
+
+				yield return newColor;
+			}
+			else
+			{
+				var newColor = GenerateDerivedColor();
+				currentColorsByColumn[sourceColumnIndex] = newColor;
+
+				SelectNextColumn();
+
+				yield return newColor;
+			}
 		}
 	}
 
@@ -119,7 +147,12 @@ public class InfinitePalette
 
 	#region Private fields
 
-	private Parameters generationParameters;
+	private Parameters parameters;
+
+	private List<HSLColor> primaries;
+
+	private List<HSLColor> currentColorsByColumn;
+	private int sourceColumnIndex;
 
 	#endregion
 
@@ -127,7 +160,36 @@ public class InfinitePalette
 
 	public InfinitePalette(Parameters parameters)
 	{
-		this.generationParameters = parameters;
+		if (parameters == null) throw new System.ArgumentException("parameters are null, can't generate palette without them");
+		this.parameters = parameters;
+		this.primaries = new List<HSLColor>(parameters.PrimaryColorCount);
+		this.currentColorsByColumn = new List<HSLColor>(parameters.PrimaryColorCount);
+	}
+
+	#endregion
+
+	#region Primary color generation
+
+	private HSLColor GeneratePrimaryColor()
+	{
+		// FIXME: Implement.
+		throw new System.NotImplementedException();
+	}
+
+	#endregion
+
+	#region Derived color generation
+
+	private HSLColor GenerateDerivedColor()
+	{
+		// FIXME: Implement.
+		throw new System.NotImplementedException();
+	}
+
+	private void SelectNextColumn()
+	{
+		// FIXME: Implement.
+		throw new System.NotImplementedException();
 	}
 
 	#endregion
