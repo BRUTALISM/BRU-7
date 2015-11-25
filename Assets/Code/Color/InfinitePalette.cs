@@ -86,7 +86,7 @@ public class InfinitePalette
 		/// <summary>
 		/// The angle increment to be used by primary color methods which use the hue offset technique (Analogous, Complementary).
 		/// </summary>
-		public float HueAngleIncrement;
+		public float AnalogousHueAngleIncrement = 10f;
 
 		/// <summary>
 		/// The mean value for the Gaussian distribution when generating a random lightness value with the LightnessAffinity.Dark affinity.
@@ -96,12 +96,12 @@ public class InfinitePalette
 		/// <summary>
 		/// The mean value for the Gaussian distribution when generating a random lightness value with the LightnessAffinity.Light affinity.
 		/// </summary>
-		public float LightnessLightAffinityMean = 0.8f;
+		public float LightnessLightAffinityMean = 0.75f;
 
 		/// <summary>
 		/// The standard deviation for the Gaussian distribution when generating a random lightness value.
 		/// </summary>
-		public float LightnessAffinityStandardDeviation = 0.2f;
+		public float LightnessAffinityStandardDeviation = 0.15f;
 
 		#endregion
 
@@ -269,7 +269,7 @@ public class InfinitePalette
 					newColor.S = RandomSaturation();
 					break;
 				case PrimaryColorMethod.Analogous:
-					newColor.H = (previousColor.H + parameters.HueAngleIncrement / 360f).PositiveFract();
+					newColor.H = (previousColor.H + parameters.AnalogousHueAngleIncrement / 360f).PositiveFract();
 					newColor.S = previousColor.S;
 					break;
 				case PrimaryColorMethod.Complementary:
@@ -302,9 +302,8 @@ public class InfinitePalette
 						LightnessMaximumColor, LightnessWhite);
 					break;
 				case LightnessAffinity.LightAndDark:
-					// TODO: Gaussian, perhaps? Uniform might be all over the place.
 					newColor.L = Nasum.GaussianInRange(LightnessMaximumColor, parameters.LightnessAffinityStandardDeviation,
-						LightnessMaximumColor, LightnessWhite);
+						LightnessBlack, LightnessWhite);
 					break;
 			}
 		}
