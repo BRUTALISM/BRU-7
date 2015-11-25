@@ -297,7 +297,7 @@ public static class Colors
 
 	public static Color RandomizeHue(this Color self, float maxHueDeviation)
 	{
-		float hueDeviation = Nasum.Range(-maxHueDeviation, maxHueDeviation).Fract();
+		float hueDeviation = Nasum.Range(-maxHueDeviation, maxHueDeviation).PositiveFract();
 		HSV hsv = self.ToHSV();
 		hsv.h += hueDeviation;
 		return FromHSV(hsv);
@@ -305,7 +305,7 @@ public static class Colors
 
 	public static Color RandomizeSaturation(this Color self, float maxSaturationDeviation)
 	{
-		float saturationDeviation = Nasum.Range(-maxSaturationDeviation, maxSaturationDeviation).Fract();
+		float saturationDeviation = Nasum.Range(-maxSaturationDeviation, maxSaturationDeviation).PositiveFract();
 		HSV hsv = self.ToHSV();
 		hsv.s += saturationDeviation;
 		return FromHSV(hsv);
@@ -313,7 +313,7 @@ public static class Colors
 
 	public static Color RandomizeValue(this Color self, float maxValueDeviation)
 	{
-		float valueDeviation = Nasum.Range(-maxValueDeviation, maxValueDeviation).Fract();
+		float valueDeviation = Nasum.Range(-maxValueDeviation, maxValueDeviation).PositiveFract();
 		HSV hsv = self.ToHSV();
 		hsv.v += valueDeviation;
 		return FromHSV(hsv);

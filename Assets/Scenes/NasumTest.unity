@@ -112,8 +112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0423feae7a91c4612921bfc834244ffe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SamplesPerTest: 1000
-  YScale: .100000001
+  SamplesPerTest: 2000
+  YScale: .0500000007
 --- !u!4 &115534198
 Transform:
   m_ObjectHideFlags: 0

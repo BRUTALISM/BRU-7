@@ -97,12 +97,18 @@ public static class Nasum
 	/// Returns a random number generated using the standard distribution with the given <paramref name="mean"/> and
 	/// <paramref name="standardDeviation"/>, in the range given by <paramref name="rangeMin"/> and <paramref name="rangeMax"/>. The
 	/// algorithm first obtains a gaussian random variable in a standard way, and then checks if it's within the given range. If it's not,
-	/// the random roll is performed again using a uniform distribution in the [rangeMin, rangeMax] range.
+	/// the random roll is repeated until a value in the [rangeMin, rangeMax] range is received. This can cause an infinite loop if you're
+	/// not careful with parameters.
 	/// </summary>
 	public static float GaussianInRange(float mean, float standardDeviation, float rangeMin, float rangeMax)
 	{
-		var randomValue = Gaussian(mean, standardDeviation);
-		if (randomValue < rangeMin || randomValue > rangeMax) return Range(rangeMin, rangeMax);
+		float randomValue = 0f;
+		do
+		{
+			randomValue = Gaussian(mean, standardDeviation);
+		}
+		while (randomValue < rangeMin || randomValue > rangeMax);
+
 		return randomValue;
 	}
 }

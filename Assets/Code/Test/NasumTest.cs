@@ -33,6 +33,7 @@ public class NasumTest : MonoBehaviour
 		GenerateTest(() => Nasum.GaussianInRange(0f, 5f, -5f, 5f));
 		GenerateTest(() => Nasum.GaussianInRange(0f, 2f, -5f, 5f));
 		GenerateTest(() => Nasum.GaussianInRange(0f, 1f, -5f, 5f));
+		GenerateTest(() => Nasum.GaussianInRange(2f, 1f, 0f, 10f));
 	}
 
 	void OnDisable()

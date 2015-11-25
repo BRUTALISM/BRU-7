@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// A color represented in the HSL color model. Easily interchangeable with UnityEngine.Color.
+/// </summary>
 public struct HSLColor
 {
 	#region Public properties

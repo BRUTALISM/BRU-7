@@ -7,15 +7,13 @@ using System.Collections.Generic;
 /// </summary>
 public class InfinitePalette
 {
-	#region Generation parameters
-
+	#region Primary color parameters
 	/// <summary>
 	/// The method used to generate initial (primary) colors which are used as starting points for generating an infinite palette.
 	/// </summary>
 	public enum PrimaryColorMethod
 	{
 		None,
-		Random,
 		Analogous,
 		Monochromatic,
 		Complementary,
@@ -33,6 +31,20 @@ public class InfinitePalette
 		LightAndDark
 	}
 
+	#endregion
+
+	#region Derived color parameters
+
+	/// <summary>
+	/// The affinity influencing derivative colors' direction relative to their parent primary color.
+	/// </summary>
+	public enum ColorWanderingAffinity
+	{
+		None,					// the derivatives start from their primary color but wander randomly from then on
+		VicinityOfPrimaryColor,	// the derivatives will stay in the vicinity of their corresponding primary color
+		WithinPrimaryColors		// the derivatives will tend to stay within the n-gon defined by all primary colors
+	}
+
 	/// <summary>
 	/// The affinity for choosing the next primary color "column" to continue the iteration on.
 	/// </summary>
@@ -46,14 +58,15 @@ public class InfinitePalette
 		// ... ?
 	}
 
+	#endregion
+
 	/// <summary>
 	/// The parameters controlling the color generation algorithm of the <see cref="InfinitePalette"/> class.
 	/// </summary>
+	[System.Serializable]
 	public class Parameters
 	{
-		// +--------------------------+
-		// | Primary color parameters |
-		// +--------------------------+
+		#region Primary color parameters
 
 		/// <summary>
 		/// Which method is used to select the primary colors.
@@ -70,9 +83,29 @@ public class InfinitePalette
 		/// </summary>
 		public int PrimaryColorCount;
 
-		// +--------------------------+
-		// | Derived color parameters |
-		// +--------------------------+
+		/// <summary>
+		/// The angle increment to be used by primary color methods which use the hue offset technique (Analogous, Complementary).
+		/// </summary>
+		public float HueAngleIncrement;
+
+		/// <summary>
+		/// The mean value for the Gaussian distribution when generating a random lightness value with the LightnessAffinity.Dark affinity.
+		/// </summary>
+		public float LightnessDarkAffinityMean = 0.2f;
+
+		/// <summary>
+		/// The mean value for the Gaussian distribution when generating a random lightness value with the LightnessAffinity.Light affinity.
+		/// </summary>
+		public float LightnessLightAffinityMean = 0.8f;
+
+		/// <summary>
+		/// The standard deviation for the Gaussian distribution when generating a random lightness value.
+		/// </summary>
+		public float LightnessAffinityStandardDeviation = 0.2f;
+
+		#endregion
+
+		#region Derived color parameters
 
 		/// <summary>
 		/// When the generation algorithm iterates over primary columns, this is the affinity it will use to choose the next column.
@@ -85,6 +118,11 @@ public class InfinitePalette
 		/// column with the highest preference, ignoring other columns. The Truth is somewhere between 0 and 1.
 		/// </summary>
 		public float ColumnAffinityIntensity;
+
+		/// <summary>
+		/// The affinity influencing derivative colors' direction relative to their parent primary color.
+		/// </summary>
+		public ColorWanderingAffinity ColorWanderingAffinity;
 
 		/// <summary>
 		/// The maximum distance (in normalized HSL cylindrical coordinates) a derived point can be away from its source primary point.
@@ -108,7 +146,19 @@ public class InfinitePalette
 		/// The maximum value a lightness component of the offset vector can have.
 		/// </summary>
 		public float LightnessMaxStep;
+
+		#endregion
 	}
+
+	#region Constants
+
+	public const float HueMinimum = 0f;
+	public const float HueMaximum = 1f;
+	public const float SaturationMinimum = 0f;
+	public const float SaturationMaximum = 1f;
+	public const float LightnessBlack = 0f;
+	public const float LightnessMaximumColor = 0.5f;
+	public const float LightnessWhite = 1f;
 
 	#endregion
 
@@ -121,25 +171,40 @@ public class InfinitePalette
 	{
 		get
 		{
-			if (primaries.Count < parameters.PrimaryColorCount)
+			while (true)
 			{
-				var newColor = GeneratePrimaryColor();
-				primaries.Add(newColor);
-				currentColorsByColumn.Add(newColor);
-
-				if (primaries.Count == parameters.PrimaryColorCount) SelectNextColumn();
-
-				yield return newColor;
+				if (primaries.Count < parameters.PrimaryColorCount)
+				{
+					var newColor = GeneratePrimaryColor();
+					primaries.Add(newColor);
+					currentColorsByColumn.Add(newColor);
+					
+					if (primaries.Count == parameters.PrimaryColorCount) SelectNextColumn();
+					
+					yield return newColor;
+				}
+				else
+				{
+					var newColor = GenerateDerivedColor();
+					currentColorsByColumn[sourceColumnIndex] = newColor;
+					
+					SelectNextColumn();
+					
+					yield return newColor;
+				}
 			}
-			else
-			{
-				var newColor = GenerateDerivedColor();
-				currentColorsByColumn[sourceColumnIndex] = newColor;
+		}
+	}
 
-				SelectNextColumn();
-
-				yield return newColor;
-			}
+	/// <summary>
+	/// Gets the base color of this palette. The base color is the first color that is generated.
+	/// </summary>
+	public HSLColor BaseColor
+	{
+		get
+		{
+			if (primaries.Count == 0) throw new System.InvalidOperationException("base color not set, no colors have been generated");
+			return primaries[0];
 		}
 	}
 
@@ -153,6 +218,16 @@ public class InfinitePalette
 
 	private List<HSLColor> currentColorsByColumn;
 	private int sourceColumnIndex;
+
+	// Hue offsets with relation to the previous color when using the PrimaryColorMethod.Compound method
+	private static List<float> compoundColorOffsets = new List<float>()
+	{
+		30f / 360f,
+		0f,
+		150f / 360f,
+		345f / 360f,
+		195f / 360f
+	};
 
 	#endregion
 
@@ -172,8 +247,70 @@ public class InfinitePalette
 
 	private HSLColor GeneratePrimaryColor()
 	{
-		// FIXME: Implement.
-		throw new System.NotImplementedException();
+		var newColor = new HSLColor();
+		newColor.A = 1f;
+
+		if (primaries.Count == 0)
+		{
+			// First color
+			newColor.H = Nasum.Range(0f, 1f);
+			newColor.S = SaturationMaximum;
+			newColor.L = LightnessMaximumColor;
+		}
+		else
+		{
+			var previousColor = primaries[primaries.Count - 1];
+
+			// Generate hue and saturation based on PrimaryColorMethod
+			switch (parameters.PrimaryColorMethod)
+			{
+				case PrimaryColorMethod.None:
+					newColor.H = Nasum.Range(HueMinimum, HueMaximum);
+					newColor.S = RandomSaturation();
+					break;
+				case PrimaryColorMethod.Analogous:
+					newColor.H = (previousColor.H + parameters.HueAngleIncrement / 360f).PositiveFract();
+					newColor.S = previousColor.S;
+					break;
+				case PrimaryColorMethod.Complementary:
+					newColor.H = (previousColor.H + 0.5f).PositiveFract();
+					newColor.S = RandomSaturation();
+					break;
+				case PrimaryColorMethod.Compound:
+					var compoundOffset = compoundColorOffsets[(primaries.Count - 1) % compoundColorOffsets.Count];
+					newColor.H = (previousColor.H + compoundOffset).PositiveFract();
+					newColor.S = RandomSaturation();
+					break;
+				case PrimaryColorMethod.Monochromatic:
+					newColor.H = previousColor.H;
+					newColor.S = RandomSaturation();
+					break;
+			}
+			
+			// Generate lightness based on LightnessAffinity
+			switch (parameters.LightnessAffinity)
+			{
+				case LightnessAffinity.None:
+					newColor.L = LightnessMaximumColor;
+					break;
+				case LightnessAffinity.Dark:
+					newColor.L = Nasum.GaussianInRange(parameters.LightnessDarkAffinityMean, parameters.LightnessAffinityStandardDeviation,
+						LightnessBlack, LightnessMaximumColor);
+					break;
+				case LightnessAffinity.Light:
+					newColor.L = Nasum.GaussianInRange(parameters.LightnessLightAffinityMean, parameters.LightnessAffinityStandardDeviation,
+						LightnessMaximumColor, LightnessWhite);
+					break;
+				case LightnessAffinity.LightAndDark:
+					// TODO: Gaussian, perhaps? Uniform might be all over the place.
+					newColor.L = Nasum.GaussianInRange(LightnessMaximumColor, parameters.LightnessAffinityStandardDeviation,
+						LightnessMaximumColor, LightnessWhite);
+					break;
+			}
+		}
+
+		// Done
+		return newColor;
 	}
 
 	#endregion
@@ -189,7 +326,17 @@ public class InfinitePalette
 	private void SelectNextColumn()
 	{
 		// FIXME: Implement.
-		throw new System.NotImplementedException();
+//		throw new System.NotImplementedException();
+	}
+
+	#endregion
+
+	#region Component randomization methods
+
+	private float RandomSaturation()
+	{
+		// TODO: Parameterize this as well?
+		return Nasum.Range(SaturationMinimum, SaturationMaximum);
 	}
 
 	#endregion

@@ -90,7 +90,7 @@ public class Farb : MonoBehaviour
 			if (i % numberOfHues == 0) hueOffset = 0f;
 
 			currentColor = currentColor
-				.SetHue((originalHue + hueOffset).Fract())
+				.SetHue((originalHue + hueOffset).PositiveFract())
 				.SetSaturation(SaturationForAllColors)
 				.SetValue(ValueForAllColors);
 			
