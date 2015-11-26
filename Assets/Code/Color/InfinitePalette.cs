@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// An infinite color palette which can be polled for new colors ad infinitum. The color generation algorithm is controlled by the
@@ -36,15 +37,15 @@ public class InfinitePalette
 	#region Derived color parameters
 
 	/// <summary>
-	/// The affinity for choosing the next primary color "column" to continue the iteration on.
+	/// The affinity for choosing the next primary color to continue the iteration on.
 	/// </summary>
-	public enum ColumnIterationAffinity
+	public enum DerivationSourceAffinity
 	{
 		None,
-		Muted,		// prefer lower saturation
-		Vibrant,	// prefer higher saturation
-		Dark,		// prefer lower lightness
-		Bright		// prefer higher lightness
+		LessSaturation,		// prefer lower saturation
+		MoreSaturation,	// prefer higher saturation
+		LessLightness,		// prefer lower lightness
+		MoreLightness		// prefer higher lightness
 		// ... ?
 	}
 
@@ -100,28 +101,32 @@ public class InfinitePalette
 		/// <summary>
 		/// When the generation algorithm iterates over primary columns, this is the affinity it will use to choose the next column.
 		/// </summary>
-		public ColumnIterationAffinity ColumnIterationAffinity;
+		public DerivationSourceAffinity DerivationSourceAffinity;
 
 		/// <summary>
 		/// How much the column affinity is taken into account when selecting columns, in the [0, 1] range. A zero value means that the
 		/// affinity will be ignored (effectively reducing column selection to a random choice), while a value of 1 will always select the
 		/// column with the highest preference, ignoring other columns. The Truth is somewhere between 0 and 1.
 		/// </summary>
-		public float ColumnAffinityIntensity;
+		[Range(0f, 1f)]
+		public float DerivationSourceAffinityIntensity = 0.9f;
 
 		/// <summary>
 		/// The maximum distance a derived color's hue can be away from its source primary point.
 		/// </summary>
+		[Range(0f, 1f)]
 		public float HueWanderMax = 0.1f;
 
 		/// <summary>
 		/// The maximum distance a derived color's saturation can be away from its source primary point.
 		/// </summary>
+		[Range(0f, 1f)]
 		public float SaturationWanderMax = 0.5f;
 
 		/// <summary>
 		/// The maximum distance a derived color's lightness can be away from its source primary point.
 		/// </summary>
+		[Range(0f, 1f)]
 		public float LightnessWanderMax = 0.1f;
 
 		// The three values below control the magnitude of the offset vector (in cylindrical space) from the current color to the color
@@ -130,16 +135,19 @@ public class InfinitePalette
 		/// <summary>
 		/// The maximum value a hue component of the offset vector can have.
 		/// </summary>
+		[Range(0f, 1f)]
 		public float HueMaxStep = 0.05f;
 
 		/// <summary>
 		/// The maximum value a saturation component of the offset vector can have.
 		/// </summary>
+		[Range(0f, 1f)]
 		public float SaturationMaxStep = 0.05f;
 
 		/// <summary>
 		/// The maximum value a lightness component of the offset vector can have.
 		/// </summary>
+		[Range(0f, 1f)]
 		public float LightnessMaxStep = 0.05f;
 
 		#endregion
@@ -314,8 +322,8 @@ public class InfinitePalette
 		var step = new Vector3(hueStep, saturationStep, lightnessStep);
 
 		// Clamp the result color to be no more than parameters.WanderMax per-component from sourcePrimaryColor
-		var hueMin = Mathf.Max(0f, sourcePrimaryColor.H - parameters.HueWanderMax);
-		var hueMax = Mathf.Min(1f, sourcePrimaryColor.H + parameters.HueWanderMax);
+		var hueMin = sourcePrimaryColor.H - parameters.HueWanderMax;
+		var hueMax = sourcePrimaryColor.H + parameters.HueWanderMax;
 		var saturationMin = Mathf.Max(0f, sourcePrimaryColor.S - parameters.SaturationWanderMax);
 		var saturationMax = Mathf.Min(1f, sourcePrimaryColor.S + parameters.SaturationWanderMax);
 		var lightnessMin = Mathf.Max(0f, sourcePrimaryColor.L - parameters.LightnessWanderMax);
@@ -332,24 +340,33 @@ public class InfinitePalette
 	{
 		var sourcePrimaryColor = primaries[sourceColumnIndex];
 
-		switch (parameters.ColumnIterationAffinity)
+		switch (parameters.DerivationSourceAffinity)
 		{
-			case ColumnIterationAffinity.None:
+			case DerivationSourceAffinity.None:
 				sourceColumnIndex = Nasum.Range(0, parameters.PrimaryColorCount);
 				break;
-			case ColumnIterationAffinity.Bright:
-				// FIXME: Implement.
+			case DerivationSourceAffinity.LessLightness:
+				sourceColumnIndex = PickWithAffinity(primaries.OrderBy(c => c.L));
 				break;
-			case ColumnIterationAffinity.Dark:
-				// FIXME: Implement.
+			case DerivationSourceAffinity.MoreLightness:
+				sourceColumnIndex = PickWithAffinity(primaries.OrderByDescending(c => c.L));
 				break;
-			case ColumnIterationAffinity.Muted:
-				// FIXME: Implement.
+			case DerivationSourceAffinity.LessSaturation:
+				sourceColumnIndex = PickWithAffinity(primaries.OrderBy(c => c.S));
 				break;
-			case ColumnIterationAffinity.Vibrant:
-				// FIXME: Implement.
+			case DerivationSourceAffinity.MoreSaturation:
+				sourceColumnIndex = PickWithAffinity(primaries.OrderByDescending(c => c.S));
 				break;
 		}
+	}
+
+	private int PickWithAffinity(IEnumerable<HSLColor> orderedColors)
+	{
+		var intensity = parameters.DerivationSourceAffinityIntensity;
+		var deviation = Mathf.Max(0.0001f, 1f - intensity);
+		var randomIndex = Mathf.RoundToInt(Nasum.GaussianInRange(0f, deviation, 0f, 1f) * (orderedColors.Count() - 1));
+
+		return primaries.IndexOf(orderedColors.ElementAt(randomIndex));
 	}
 
 	#endregion
