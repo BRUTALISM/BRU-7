@@ -250,62 +250,53 @@ public class InfinitePalette
 		var newColor = new HSLColor();
 		newColor.A = 1f;
 
-		if (primaries.Count == 0)
-		{
-			// First color
-			newColor.H = Nasum.Range(0f, 1f);
-			newColor.S = SaturationMaximum;
-			newColor.L = LightnessMaximumColor;
-		}
-		else
-		{
-			var previousColor = primaries[primaries.Count - 1];
+		var previousColor = new HSLColor(RandomHue(), RandomSaturation(), 0f, 1f);
+		if (primaries.Count != 0) previousColor = primaries[primaries.Count - 1];
 
-			// Generate hue and saturation based on PrimaryColorMethod
-			switch (parameters.PrimaryColorMethod)
-			{
-				case PrimaryColorMethod.None:
-					newColor.H = Nasum.Range(HueMinimum, HueMaximum);
-					newColor.S = RandomSaturation();
-					break;
-				case PrimaryColorMethod.Analogous:
-					newColor.H = (previousColor.H + parameters.AnalogousHueAngleIncrement / 360f).PositiveFract();
-					newColor.S = previousColor.S;
-					break;
-				case PrimaryColorMethod.Complementary:
-					newColor.H = (previousColor.H + 0.5f).PositiveFract();
-					newColor.S = RandomSaturation();
-					break;
-				case PrimaryColorMethod.Compound:
-					var compoundOffset = compoundColorOffsets[(primaries.Count - 1) % compoundColorOffsets.Count];
-					newColor.H = (previousColor.H + compoundOffset).PositiveFract();
-					newColor.S = RandomSaturation();
-					break;
-				case PrimaryColorMethod.Monochromatic:
-					newColor.H = previousColor.H;
-					newColor.S = RandomSaturation();
-					break;
-			}
-			
-			// Generate lightness based on LightnessAffinity
-			switch (parameters.LightnessAffinity)
-			{
-				case LightnessAffinity.None:
-					newColor.L = LightnessMaximumColor;
-					break;
-				case LightnessAffinity.Dark:
-					newColor.L = Nasum.GaussianInRange(parameters.LightnessDarkAffinityMean, parameters.LightnessAffinityStandardDeviation,
-						LightnessBlack, LightnessMaximumColor);
-					break;
-				case LightnessAffinity.Light:
-					newColor.L = Nasum.GaussianInRange(parameters.LightnessLightAffinityMean, parameters.LightnessAffinityStandardDeviation,
-						LightnessMaximumColor, LightnessWhite);
-					break;
-				case LightnessAffinity.LightAndDark:
-					newColor.L = Nasum.GaussianInRange(LightnessMaximumColor, parameters.LightnessAffinityStandardDeviation,
-						LightnessBlack, LightnessWhite);
-					break;
-			}
+		// Generate hue and saturation based on PrimaryColorMethod
+		switch (parameters.PrimaryColorMethod)
+		{
+			case PrimaryColorMethod.None:
+				newColor.H = Nasum.Range(HueMinimum, HueMaximum);
+				newColor.S = RandomSaturation();
+				break;
+			case PrimaryColorMethod.Analogous:
+				newColor.H = (previousColor.H + parameters.AnalogousHueAngleIncrement / 360f).PositiveFract();
+				newColor.S = previousColor.S;
+				break;
+			case PrimaryColorMethod.Complementary:
+				newColor.H = (previousColor.H + 0.5f).PositiveFract();
+				newColor.S = RandomSaturation();
+				break;
+			case PrimaryColorMethod.Compound:
+				var compoundOffset = primaries.Count > 0 ? compoundColorOffsets[(primaries.Count - 1) % compoundColorOffsets.Count] : 0f;
+				newColor.H = (previousColor.H + compoundOffset).PositiveFract();
+				newColor.S = RandomSaturation();
+				break;
+			case PrimaryColorMethod.Monochromatic:
+				newColor.H = previousColor.H;
+				newColor.S = RandomSaturation();
+				break;
+		}
+
+		// Generate lightness based on LightnessAffinity
+		switch (parameters.LightnessAffinity)
+		{
+			case LightnessAffinity.None:
+				newColor.L = LightnessMaximumColor;
+				break;
+			case LightnessAffinity.Dark:
+				newColor.L = Nasum.GaussianInRange(parameters.LightnessDarkAffinityMean, parameters.LightnessAffinityStandardDeviation,
+					LightnessBlack, LightnessMaximumColor);
+				break;
+			case LightnessAffinity.Light:
+				newColor.L = Nasum.GaussianInRange(parameters.LightnessLightAffinityMean, parameters.LightnessAffinityStandardDeviation,
+					LightnessMaximumColor, LightnessWhite);
+				break;
+			case LightnessAffinity.LightAndDark:
+				newColor.L = Nasum.GaussianInRange(LightnessMaximumColor, parameters.LightnessAffinityStandardDeviation,
+					LightnessBlack, LightnessWhite);
+				break;
 		}
 
 		// Done
@@ -331,6 +322,12 @@ public class InfinitePalette
 	#endregion
 
 	#region Component randomization methods
+
+	private float RandomHue()
+	{
+		// TODO: Parameterize this as well?
+		return Nasum.Range(HueMinimum, HueMaximum);
+	}
 
 	private float RandomSaturation()
 	{
