@@ -77,10 +77,19 @@ public class InfinitePaletteTest : MonoBehaviour
 
 		const float SingleColorCellSize = 0.8f;
 
+		float horizontalOffset = 0f;
+		float verticalOffset = SingleColorCellSize;
 		for (int i = 0; i < colors.Count; i++)
 		{
+			if (i % Parameters.PrimaryColorCount == 0)
+			{
+				horizontalOffset = 0f;
+				verticalOffset -= SingleColorCellSize;
+			}
+
 			var color = colors[i];
-			var rootPosition = new Vector3(SingleColorCellSize * i, 0f, 0f);
+			var rootPosition = new Vector3(horizontalOffset, verticalOffset, 0f);
+			horizontalOffset += SingleColorCellSize;
 
 			meshBuilder.Pack(
 				new List<Vector3>()

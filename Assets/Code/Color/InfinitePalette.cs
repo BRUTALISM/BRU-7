@@ -36,16 +36,6 @@ public class InfinitePalette
 	#region Derived color parameters
 
 	/// <summary>
-	/// The affinity influencing derivative colors' direction relative to their parent primary color.
-	/// </summary>
-	public enum ColorWanderingAffinity
-	{
-		None,					// the derivatives start from their primary color but wander randomly from then on
-		VicinityOfPrimaryColor,	// the derivatives will stay in the vicinity of their corresponding primary color
-		WithinPrimaryColors		// the derivatives will tend to stay within the n-gon defined by all primary colors
-	}
-
-	/// <summary>
 	/// The affinity for choosing the next primary color "column" to continue the iteration on.
 	/// </summary>
 	public enum ColumnIterationAffinity
@@ -81,7 +71,7 @@ public class InfinitePalette
 		/// <summary>
 		/// The number of primary colors to generate.
 		/// </summary>
-		public int PrimaryColorCount;
+		public int PrimaryColorCount = 5;
 
 		/// <summary>
 		/// The angle increment to be used by primary color methods which use the hue offset technique (Analogous, Complementary).
@@ -96,12 +86,12 @@ public class InfinitePalette
 		/// <summary>
 		/// The mean value for the Gaussian distribution when generating a random lightness value with the LightnessAffinity.Light affinity.
 		/// </summary>
-		public float LightnessLightAffinityMean = 0.75f;
+		public float LightnessLightAffinityMean = 0.6f;
 
 		/// <summary>
 		/// The standard deviation for the Gaussian distribution when generating a random lightness value.
 		/// </summary>
-		public float LightnessAffinityStandardDeviation = 0.15f;
+		public float LightnessAffinityStandardDeviation = 0.1f;
 
 		#endregion
 
@@ -120,14 +110,19 @@ public class InfinitePalette
 		public float ColumnAffinityIntensity;
 
 		/// <summary>
-		/// The affinity influencing derivative colors' direction relative to their parent primary color.
+		/// The maximum distance a derived color's hue can be away from its source primary point.
 		/// </summary>
-		public ColorWanderingAffinity ColorWanderingAffinity;
+		public float HueWanderMax = 0.1f;
 
 		/// <summary>
-		/// The maximum distance (in normalized HSL cylindrical coordinates) a derived point can be away from its source primary point.
+		/// The maximum distance a derived color's saturation can be away from its source primary point.
 		/// </summary>
-		public float WanderMax;
+		public float SaturationWanderMax = 0.5f;
+
+		/// <summary>
+		/// The maximum distance a derived color's lightness can be away from its source primary point.
+		/// </summary>
+		public float LightnessWanderMax = 0.1f;
 
 		// The three values below control the magnitude of the offset vector (in cylindrical space) from the current color to the color
 		// about to be generated next.
@@ -135,17 +130,17 @@ public class InfinitePalette
 		/// <summary>
 		/// The maximum value a hue component of the offset vector can have.
 		/// </summary>
-		public float HueMaxStep;
+		public float HueMaxStep = 0.05f;
 
 		/// <summary>
 		/// The maximum value a saturation component of the offset vector can have.
 		/// </summary>
-		public float SaturationMaxStep;
+		public float SaturationMaxStep = 0.05f;
 
 		/// <summary>
 		/// The maximum value a lightness component of the offset vector can have.
 		/// </summary>
-		public float LightnessMaxStep;
+		public float LightnessMaxStep = 0.05f;
 
 		#endregion
 	}
@@ -261,16 +256,16 @@ public class InfinitePalette
 				newColor.S = RandomSaturation();
 				break;
 			case PrimaryColorMethod.Analogous:
-				newColor.H = (previousColor.H + parameters.AnalogousHueAngleIncrement / 360f).PositiveFract();
+				newColor.H = (previousColor.H + parameters.AnalogousHueAngleIncrement / 360f).Wrap01();
 				newColor.S = previousColor.S;
 				break;
 			case PrimaryColorMethod.Complementary:
-				newColor.H = (previousColor.H + 0.5f).PositiveFract();
+				newColor.H = (previousColor.H + 0.5f).Wrap01();
 				newColor.S = RandomSaturation();
 				break;
 			case PrimaryColorMethod.Compound:
 				var compoundOffset = primaries.Count > 0 ? compoundColorOffsets[(primaries.Count - 1) % compoundColorOffsets.Count] : 0f;
-				newColor.H = (previousColor.H + compoundOffset).PositiveFract();
+				newColor.H = (previousColor.H + compoundOffset).Wrap01();
 				newColor.S = RandomSaturation();
 				break;
 			case PrimaryColorMethod.Monochromatic:
@@ -309,14 +304,52 @@ public class InfinitePalette
 
 	private HSLColor GenerateDerivedColor()
 	{
-		// FIXME: Implement.
-		throw new System.NotImplementedException();
+		var sourcePrimaryColor = primaries[sourceColumnIndex];
+		var currentColumnColor = currentColorsByColumn[sourceColumnIndex];
+
+		// Generate a random step vector
+		var hueStep = Nasum.Range(-parameters.HueMaxStep, parameters.HueMaxStep);
+		var saturationStep = Nasum.Range(-parameters.SaturationMaxStep, parameters.SaturationMaxStep);
+		var lightnessStep = Nasum.Range(-parameters.LightnessMaxStep, parameters.LightnessMaxStep);
+		var step = new Vector3(hueStep, saturationStep, lightnessStep);
+
+		// Clamp the result color to be no more than parameters.WanderMax per-component from sourcePrimaryColor
+		var hueMin = Mathf.Max(0f, sourcePrimaryColor.H - parameters.HueWanderMax);
+		var hueMax = Mathf.Min(1f, sourcePrimaryColor.H + parameters.HueWanderMax);
+		var saturationMin = Mathf.Max(0f, sourcePrimaryColor.S - parameters.SaturationWanderMax);
+		var saturationMax = Mathf.Min(1f, sourcePrimaryColor.S + parameters.SaturationWanderMax);
+		var lightnessMin = Mathf.Max(0f, sourcePrimaryColor.L - parameters.LightnessWanderMax);
+		var lightnessMax = Mathf.Min(1f, sourcePrimaryColor.L + parameters.LightnessWanderMax);
+
+		var hue = Mathf.Clamp(currentColumnColor.H + step.x, hueMin, hueMax).Wrap01();
+		var saturation = Mathf.Clamp(currentColumnColor.S + step.y, saturationMin, saturationMax);
+		var lightness = Mathf.Clamp(currentColumnColor.L + step.z, lightnessMin, lightnessMax);
+
+		return new HSLColor(hue, saturation, lightness);
 	}
 
 	private void SelectNextColumn()
 	{
-		// FIXME: Implement.
-//		throw new System.NotImplementedException();
+		var sourcePrimaryColor = primaries[sourceColumnIndex];
+
+		switch (parameters.ColumnIterationAffinity)
+		{
+			case ColumnIterationAffinity.None:
+				sourceColumnIndex = Nasum.Range(0, parameters.PrimaryColorCount);
+				break;
+			case ColumnIterationAffinity.Bright:
+				// FIXME: Implement.
+				break;
+			case ColumnIterationAffinity.Dark:
+				// FIXME: Implement.
+				break;
+			case ColumnIterationAffinity.Muted:
+				// FIXME: Implement.
+				break;
+			case ColumnIterationAffinity.Vibrant:
+				// FIXME: Implement.
+				break;
+		}
 	}
 
 	#endregion
