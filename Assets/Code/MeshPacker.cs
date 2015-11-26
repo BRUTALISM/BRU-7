@@ -17,7 +17,7 @@ public class MeshPacker : MonoBehaviour
 
 	private List<PartialMesh> partialMeshes = new List<PartialMesh>();
 
-	private List<GameObject> children = null;
+	private List<GameObject> children = new List<GameObject>();
 
 	private int partialMeshesInWindow = 0;
 
@@ -45,18 +45,24 @@ public class MeshPacker : MonoBehaviour
 
 		if (partialMeshes.Count == partialMeshesInWindow)
 		{
-			var meshBuilder = new MeshBuilder();
-			foreach (var partialMesh in partialMeshes) meshBuilder.Pack(partialMesh);
-			
-			var meshes = meshBuilder.Build();
-			foreach (var mesh in meshes) mesh.RecalculateNormals();
-			
 			if (children != null)
 			{
 				foreach (var child in children) Destroy(child);
+				children.Clear();
+			}
+
+			for (int i = 0; i < partialMeshes.Count - 1; i += 2)
+			{
+				var meshBuilder = new MeshBuilder();
+				meshBuilder.Pack(partialMeshes[i]);
+				meshBuilder.Pack(partialMeshes[i + 1]);
+
+				var meshes = meshBuilder.Build();
+				foreach (var mesh in meshes) mesh.RecalculateNormals();
+
+				children.AddRange(CreateChildrenForMeshes(meshes, this.gameObject));
 			}
 			
-			children = CreateChildrenForMeshes(meshes, this.gameObject);
 			partialMeshes.Clear();
 
 			generatedChildrenSubject.OnNext(children);

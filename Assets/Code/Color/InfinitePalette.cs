@@ -338,8 +338,6 @@ public class InfinitePalette
 
 	private void SelectNextColumn()
 	{
-		var sourcePrimaryColor = primaries[sourceColumnIndex];
-
 		switch (parameters.DerivationSourceAffinity)
 		{
 			case DerivationSourceAffinity.None:

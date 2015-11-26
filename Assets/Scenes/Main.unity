@@ -366,7 +366,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 259567176}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.0292349, y: 11.6364861, z: 13.4484873}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -383,13 +383,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SeedGenerator: {fileID: 1215265777}
-  SaturationForAllColors: .899999976
-  ValueForAllColors: .800000012
-  NumberOfHuesMinimum: 3
-  NumberOfHuesMaximum: 5
-  TotalColorsMin: 5
-  TotalColorsMax: 10
-  HueAngleIncrement: 15
+  PaletteGeneratorParameters:
+    PrimaryColorMethod: 4
+    LightnessAffinity: 0
+    PrimaryColorCount: 5
+    AnalogousHueAngleIncrement: 10
+    LightnessDarkAffinityMean: .200000003
+    LightnessLightAffinityMean: .600000024
+    LightnessAffinityStandardDeviation: .100000001
+    DerivationSourceAffinity: 2
+    DerivationSourceAffinityIntensity: .899999976
+    HueWanderMax: .100000001
+    SaturationWanderMax: .5
+    LightnessWanderMax: .100000001
+    HueMaxStep: .0500000007
+    SaturationMaxStep: .0500000007
+    LightnessMaxStep: .0500000007
 --- !u!114 &259567180
 MonoBehaviour:
   m_ObjectHideFlags: 0
