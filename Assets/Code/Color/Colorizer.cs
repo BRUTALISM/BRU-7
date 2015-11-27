@@ -8,8 +8,11 @@ public class Colorizer : MonoBehaviour
 	#region Editor public fields
 
 	public Material MeshMaterial;
+
 	public string MaterialColorProperty = "_EmissionColor";
-	public int PaletteColorIndex = 0;
+
+	[Range(0f, 1f)]
+	public float ColorAlpha = 1f;
 
 	#endregion
 
@@ -40,9 +43,14 @@ public class Colorizer : MonoBehaviour
 		foreach (var renderer in objects.Select(o => o.GetComponent<MeshRenderer>()))
 		{
 			var meshMaterial = new Material(MeshMaterial);
+			meshMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+			meshMaterial.SetInt("_ZWrite", 1);
+			meshMaterial.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
 
 			colorEnumerator.MoveNext();
-			meshMaterial.SetColor(MaterialColorProperty, colorEnumerator.Current);
+			var color = colorEnumerator.Current;
+			color.A = ColorAlpha;
+			meshMaterial.SetColor(MaterialColorProperty, color);
 
 			renderer.sharedMaterial = meshMaterial;
 		}

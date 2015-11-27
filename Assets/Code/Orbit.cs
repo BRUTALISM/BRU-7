@@ -9,12 +9,19 @@ public class Orbit : MonoBehaviour
 	public bool XRotation = true;
 	public bool YRotation = true;
 	public bool ZRotation = true;
+	public float MinimumDistance = 10f;
+	public float MaximumDistance = 150f;
 
 	#endregion
 
 	#region Public properties
 
-	public float DistanceFromOrigin { get; set; }
+	private float distanceFromOrigin;
+	public float DistanceFromOrigin
+	{
+		get { return distanceFromOrigin; }
+		set { distanceFromOrigin = Mathf.Clamp(value, MinimumDistance, MaximumDistance); }
+	}
 
 	#endregion
 
