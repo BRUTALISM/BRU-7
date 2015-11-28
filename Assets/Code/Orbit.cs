@@ -11,6 +11,7 @@ public class Orbit : MonoBehaviour
 	public bool ZRotation = true;
 	public float MinimumDistance = 10f;
 	public float MaximumDistance = 150f;
+	public float RotationOriginResetDuration = 3f;
 
 	#endregion
 
@@ -23,11 +24,37 @@ public class Orbit : MonoBehaviour
 		set { distanceFromOrigin = Mathf.Clamp(value, MinimumDistance, MaximumDistance); }
 	}
 
+	public Vector3 RotationOrigin
+	{
+		get { return rotationOrigin; }
+		set { lastSetRotationOrigin = rotationOrigin = value; lastRotationOriginSetTime = Time.time; }
+	}
+
+	public bool LerpRotationOriginToZero
+	{
+		get { return lerpRotationOrigin; }
+		set
+		{
+			lerpRotationOrigin = value;
+			if (lerpRotationOrigin)
+			{
+				// Invoke the rotation origin setter again, to reset the animation timer and stuff
+				RotationOrigin = rotationOrigin;
+			}
+		}
+	}
+
 	#endregion
 
 	#region Private fields
 
 	private Quaternion rotationOffset;
+
+	private Vector3 rotationOrigin;
+	private Vector3 lastSetRotationOrigin;
+	private float lastRotationOriginSetTime;
+
+	private bool lerpRotationOrigin;
 
 	#endregion
 
@@ -69,7 +96,14 @@ public class Orbit : MonoBehaviour
 		}
 		transform.rotation = rotation;
 
-		transform.position = -transform.forward * DistanceFromOrigin;
+		transform.position = RotationOrigin - transform.forward * DistanceFromOrigin;
+
+		if (LerpRotationOriginToZero)
+		{
+			// Slowly reset RotationOrigin back to zero
+			float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((Time.time - lastRotationOriginSetTime) / RotationOriginResetDuration));
+			rotationOrigin = Vector3.Lerp(lastSetRotationOrigin, Vector3.zero, t);
+		}
 	}
 
 	#endregion

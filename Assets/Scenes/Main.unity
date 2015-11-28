@@ -881,6 +881,7 @@ GameObject:
   - 114: {fileID: 903805384}
   - 114: {fileID: 903805387}
   - 114: {fileID: 903805386}
+  - 114: {fileID: 903805388}
   m_Layer: 5
   m_Name: Event Catcher Panel
   m_TagString: Untagged
@@ -964,6 +965,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Orbiter: {fileID: 996138638}
+--- !u!114 &903805388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 903805382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21065ecac6024ef79c792a45d352670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &996138632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +1082,7 @@ MonoBehaviour:
   ZRotation: 1
   MinimumDistance: 10
   MaximumDistance: 150
+  RotationOriginResetDuration: 5
 --- !u!114 &996138639
 MonoBehaviour:
   m_ObjectHideFlags: 0
