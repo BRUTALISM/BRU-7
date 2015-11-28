@@ -445,7 +445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Side: 0
   Content: {fileID: 53373284}
-  EdgeOffset: 40
+  EdgeOffset: 100
   DragThreshold: 0
   DragAnimationDuration: .200000003
 --- !u!114 &291565574
@@ -1500,7 +1500,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '<- swipe from left
+  m_Text: '-> swipe from left
 
     to pull out
 

@@ -23,7 +23,7 @@ public class Sidekick : MonoBehaviour, IDragHandler, IEndDragHandler
 	{
 		get
 		{
-			return rectTransform.anchoredPosition.x == 0f;
+			return Mathf.Approximately(rectTransform.anchoredPosition.x, 0f);
 		}
 	}
 
