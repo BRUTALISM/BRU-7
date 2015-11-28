@@ -10,6 +10,7 @@ public class VirtualKeyboard : MonoBehaviour
 	public GameObject SingleKeyPrefab;
 	public GameObject SingleSpacerPrefab;
 	public List<HorizontalLayoutGroup> Rows;
+	public Color ClearAllKeyColor = Color.red;
 
 	#endregion
 
@@ -17,7 +18,8 @@ public class VirtualKeyboard : MonoBehaviour
 
 	public IObservable<char> KeyPresses { get { return keyPressesSubject; } }
 
-	public static readonly char BackspaceCharacter = '⌫';
+	public static readonly char BackspaceCharacter = '<';
+	public static readonly char ClearAllCharacter = 'X';
 
 	#endregion
 
@@ -27,7 +29,7 @@ public class VirtualKeyboard : MonoBehaviour
 	{
 		"qwertyuiop",
 		"_asdfghjkl_",
-		"__zxcvbnm_" + BackspaceCharacter,
+		ClearAllCharacter + "_zxcvbnm_" + BackspaceCharacter,
 		" "
 	};
 
@@ -60,7 +62,10 @@ public class VirtualKeyboard : MonoBehaviour
 					var displayString = letter.ToString();
 					if (letter == ' ') displayString = "space";
 
-					letterObject.GetComponentInChildren<Text>().text = displayString;
+					var textComponent = letterObject.GetComponentInChildren<Text>();
+					textComponent.text = displayString;
+
+					if (letter == ClearAllCharacter) textComponent.color = ClearAllKeyColor;
 
 					keyboardButton.Key = letter;
 				}

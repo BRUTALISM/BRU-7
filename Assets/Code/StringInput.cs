@@ -68,6 +68,10 @@ public class StringInput : MonoBehaviour
 				currentInputString = currentInputString.Substring(0, currentInputString.Length - 1);
 			}
 		}
+		else if (input == VirtualKeyboard.ClearAllCharacter)
+		{
+			currentInputString = "";
+		}
 		else if (!char.IsLetterOrDigit(input) && !char.IsWhiteSpace(input))
 		{
 			return;
