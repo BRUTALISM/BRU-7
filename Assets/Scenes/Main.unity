@@ -1044,7 +1044,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a784d4bff451844499fdc439ed2480ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FilenamePrefix: BRU-7-
   ScreenshotScale: 2
   SaveOverlayPrefab: {fileID: 129978, guid: c9ed7fb1aa4d54903a17014de250a233, type: 2}
 --- !u!114 &903805387
