@@ -42,14 +42,11 @@ public class Colorizer : MonoBehaviour
 		var colorEnumerator = palette.Colors.GetEnumerator();
 		foreach (var renderer in objects.Select(o => o.GetComponent<MeshRenderer>()))
 		{
-			var meshMaterial = new Material(MeshMaterial);
-			meshMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-			meshMaterial.SetInt("_ZWrite", 1);
-			meshMaterial.SetInt("_ZTest", (int)UnityEngine.Rendering.CompareFunction.Always);
-
 			colorEnumerator.MoveNext();
 			var color = colorEnumerator.Current;
 			color.A = ColorAlpha;
+
+			var meshMaterial = new Material(MeshMaterial);
 			meshMaterial.SetColor(MaterialColorProperty, color);
 
 			renderer.sharedMaterial = meshMaterial;

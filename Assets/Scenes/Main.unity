@@ -888,7 +888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de5806c747064c88bd7950d37275e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: a24590383cbee4a03b5fae8dff857709, type: 2}
+  MeshMaterial: {fileID: 2100000, guid: 56a13fc88a4a8469799b13f55181f3ad, type: 2}
   MaterialColorProperty: _Color
   ColorAlpha: .899999976
 --- !u!1 &899595870
@@ -1433,7 +1433,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de5806c747064c88bd7950d37275e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: a24590383cbee4a03b5fae8dff857709, type: 2}
+  MeshMaterial: {fileID: 2100000, guid: 56a13fc88a4a8469799b13f55181f3ad, type: 2}
   MaterialColorProperty: _Color
   ColorAlpha: .899999976
 --- !u!1 &1588020437
