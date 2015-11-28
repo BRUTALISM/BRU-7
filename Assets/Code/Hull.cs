@@ -25,6 +25,13 @@ public class Hull : MonoBehaviour
 
 	private float pointLifetimeSeconds;
 
+//	private List<Vector2> triangleUVs = new List<Vector2>()
+//	{
+//		new Vector2(0f, 0f),
+//		new Vector2(1f, 0f),
+//		new Vector2(1f, 1f)
+//	};
+
 	#endregion
 
 	#region Unity methods
@@ -337,6 +344,8 @@ public class Hull : MonoBehaviour
 					partialMesh.Vertices.Add(point.Position);
 					partialMesh.Tangents.Add(PackTangentForPoint(point));
 				}
+
+//				partialMesh.UVs.AddRange(triangleUVs);
 			}
 		}
 		else
@@ -360,6 +369,8 @@ public class Hull : MonoBehaviour
 						partialMesh.Vertices.Add(point.Position);
 						partialMesh.Tangents.Add(PackTangentForPoint(point));
 					}
+
+					// TODO: UV coordinate support for non-flat shaded vertices.
 				}
 			}
 		}

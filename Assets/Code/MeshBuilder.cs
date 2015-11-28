@@ -25,6 +25,7 @@ public class MeshBuilder
 	public List<Vector3> Normals { get; private set; }
 	public List<Color> Colors { get; private set; }
 	public List<Vector4> Tangents { get; private set; }
+	public List<Vector2> UVs { get; private set; }
 
 	public IEnumerable<PartialMesh> PartialMeshes { get { return partials; } }
 
@@ -45,6 +46,7 @@ public class MeshBuilder
 		Normals = new List<Vector3>();
 		Colors = new List<Color>();
 		Tangents = new List<Vector4>();
+		UVs = new List<Vector2>();
 	}
 
 	#endregion
@@ -77,6 +79,7 @@ public class MeshBuilder
 			partialMesh.Normals = Normals;
 			partialMesh.Colors = Colors;
 			partialMesh.Tangents = Tangents;
+			partialMesh.UVs = UVs;
 			
 			partials.Add(partialMesh);
 		}
@@ -100,6 +103,7 @@ public class MeshBuilder
 		partialMesh.Normals = new List<Vector3>(Normals);
 		partialMesh.Colors = new List<Color>(Colors);
 		partialMesh.Tangents = new List<Vector4>(Tangents);
+		partialMesh.UVs = new List<Vector2>(UVs);
 
 		return partialMesh;
 	}
@@ -114,6 +118,7 @@ public class MeshBuilder
 		if (Normals.Count > 0) Normals = new List<Vector3>();
 		if (Colors.Count > 0) Colors = new List<Color>();
 		if (Tangents.Count > 0) Tangents = new List<Vector4>();
+		if (UVs.Count > 0) UVs = new List<Vector2>();
 	}
 
 	#endregion
@@ -126,7 +131,7 @@ public class MeshBuilder
 	/// having this class).
 	/// </summary>
 	public void Pack(List<Vector3> vertices, List<int> indices, List<Vector3> normals = null, List<Color> colors = null,
-		List<Vector4> tangents = null)
+		List<Vector4> tangents = null, List<Vector2> uvs = null)
 	{
 		if (vertices.Count > 65534) throw new System.ArgumentException("vertices.Count must be less than 65534");
 		if (this.Vertices.Count + vertices.Count > 65534) PreparePartials();
@@ -145,6 +150,8 @@ public class MeshBuilder
 		if (normals != null) this.Normals.AddRange(normals);
 
 		if (tangents != null) this.Tangents.AddRange(tangents);
+
+		if (uvs != null) this.UVs.AddRange(uvs);
 	}
 
 	/// <summary>
@@ -152,7 +159,7 @@ public class MeshBuilder
 	/// </summary>
 	public void Pack(PartialMesh partialMesh)
 	{
-		Pack(partialMesh.Vertices, partialMesh.Indices, partialMesh.Normals, partialMesh.Colors, partialMesh.Tangents);
+		Pack(partialMesh.Vertices, partialMesh.Indices, partialMesh.Normals, partialMesh.Colors, partialMesh.Tangents, partialMesh.UVs);
 	}
 
 	#endregion
@@ -495,6 +502,7 @@ public class MeshBuilder
 			if (partialMesh.Normals != null && partialMesh.Normals.Count > 0) mesh.normals = partialMesh.Normals.ToArray();
 			if (partialMesh.Colors != null && partialMesh.Colors.Count > 0) mesh.colors = partialMesh.Colors.ToArray();
 			if (partialMesh.Tangents != null && partialMesh.Tangents.Count > 0) mesh.tangents = partialMesh.Tangents.ToArray();
+			if (partialMesh.UVs != null && partialMesh.UVs.Count > 0) mesh.uv = partialMesh.UVs.ToArray();
 
 			meshes.Add(mesh);
 		}
