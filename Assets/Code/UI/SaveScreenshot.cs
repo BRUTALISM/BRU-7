@@ -7,7 +7,6 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 {
 	#region Editor public fields
 
-	public string FilenamePrefix = "BRU-7-";
 	public int ScreenshotScale = 2;
 	public GameObject SaveOverlayPrefab;
 
@@ -17,6 +16,9 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 	#endregion
 
 	#region Private fields
+
+	private StringInput stringInputComponent;
+
 	#endregion
 
 	#region Native hooks
@@ -35,10 +37,9 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 	#region Unity methods
 
 	void Start()
-	{}
-
-	void Update()
-	{}
+	{
+		stringInputComponent = FindObjectOfType<StringInput>();
+	}
 
 	#endregion
 
@@ -75,7 +76,8 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 
 		yield return new WaitForSeconds(0.1f);
 
-		var filename = string.Format("{0}/{1}{2}.png", Application.persistentDataPath, FilenamePrefix, GetTimestamp());
+		var filename = string.Format("{0}/AE1-{1}-{2}.png", Application.persistentDataPath, stringInputComponent.CurrentInputString,
+			GetTimestamp());
 
 		var targetWidth = Camera.main.pixelWidth * ScreenshotScale;
 		var targetHeight = Camera.main.pixelHeight * ScreenshotScale;

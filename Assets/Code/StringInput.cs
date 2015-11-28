@@ -16,6 +16,8 @@ public class StringInput : MonoBehaviour
 
 	public IObservable<string> InputStrings { get { return inputStringSubject; } }
 
+	public string CurrentInputString { get { return currentInputString; } }
+
 	#endregion
 
 	#region Private fields
