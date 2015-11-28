@@ -19,6 +19,14 @@ public class Sidekick : MonoBehaviour, IDragHandler, IEndDragHandler
 
 	public enum ScreenSide { Left, Right };
 
+	public bool IsFullyShown
+	{
+		get
+		{
+			return rectTransform.anchoredPosition.x == 0f;
+		}
+	}
+
 	#endregion
 
 	#region Private fields
