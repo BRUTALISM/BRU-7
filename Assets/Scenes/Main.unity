@@ -105,7 +105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &17091700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,14 +137,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SeedGenerator: {fileID: 1215265777}
   AxisOfSymmetry: 2
-  InitialBatches: 2
+  InitialBatches: 8
   PointsPerBatch: 4
   NewBatchInterval: 2
   Extent: 2
   MaxDistanceToPreviousBatch: 5
   DistanceToPreviousBatchScale: {x: 1, y: .5, z: 1}
-  MaxDistanceToPreviousPoint: 5
+  MaxDistanceToPreviousPoint: 3
   StartingPointWeight: 1
+  PointPositionAffinity: {x: 0, y: 0, z: 0}
 --- !u!4 &17091702
 Transform:
   m_ObjectHideFlags: 0
@@ -330,6 +331,7 @@ MonoBehaviour:
   - {fileID: 400398697}
   - {fileID: 2017240837}
   - {fileID: 899595873}
+  ClearAllKeyColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &259567176
 GameObject:
   m_ObjectHideFlags: 0
@@ -676,7 +678,7 @@ GameObject:
   - 114: {fileID: 891532190}
   - 114: {fileID: 891532192}
   m_Layer: 0
-  m_Name: Main Body Generator
+  m_Name: Outer Body Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -713,8 +715,9 @@ MonoBehaviour:
   Extent: 25
   MaxDistanceToPreviousBatch: 4
   DistanceToPreviousBatchScale: {x: 1, y: .5, z: 1}
-  MaxDistanceToPreviousPoint: 10
+  MaxDistanceToPreviousPoint: 4
   StartingPointWeight: 1
+  PointPositionAffinity: {x: .300000012, y: 0, z: .300000012}
 --- !u!4 &891532187
 Transform:
   m_ObjectHideFlags: 0
@@ -1207,7 +1210,7 @@ GameObject:
   - 114: {fileID: 1368822826}
   - 114: {fileID: 1368822833}
   m_Layer: 0
-  m_Name: Alternative Body Generator
+  m_Name: Center Body Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1297,8 +1300,9 @@ MonoBehaviour:
   Extent: 10
   MaxDistanceToPreviousBatch: 6
   DistanceToPreviousBatchScale: {x: 1, y: .200000003, z: 1}
-  MaxDistanceToPreviousPoint: 8
+  MaxDistanceToPreviousPoint: 6
   StartingPointWeight: 1
+  PointPositionAffinity: {x: 0, y: 0, z: 0}
 --- !u!4 &1368822832
 Transform:
   m_ObjectHideFlags: 0

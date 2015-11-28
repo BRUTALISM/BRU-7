@@ -9,7 +9,7 @@ public class Colorizer : MonoBehaviour
 
 	public Material MeshMaterial;
 
-	public string MaterialColorProperty = "_EmissionColor";
+	public string MaterialColorProperty = "_Color";
 
 	[Range(0f, 1f)]
 	public float ColorAlpha = 1f;
