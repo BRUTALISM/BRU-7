@@ -8,6 +8,7 @@ public class RandomSeedGenerator : MonoBehaviour
 	#region Editor public fields
 
 	public int SeedWhenEmpty = 7;
+	public float ThrottlingInterval = 0.5f;
 
 	#endregion
 
@@ -27,7 +28,10 @@ public class RandomSeedGenerator : MonoBehaviour
 
 	void Start()
 	{
-		FindObjectOfType<StringInput>().InputStrings.Subscribe(ProcessInput).AddTo(this);
+		FindObjectOfType<StringInput>().InputStrings
+			.Throttle(System.TimeSpan.FromSeconds(ThrottlingInterval))
+			.Subscribe(ProcessInput)
+			.AddTo(this);
 
 		// Fire out an initial seed, to start the pipeline
 		Nasum.Seed = SeedWhenEmpty;
