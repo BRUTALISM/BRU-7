@@ -1290,6 +1290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SeedWhenEmpty: 7
+  ThrottlingInterval: .5
 --- !u!4 &1215265778
 Transform:
   m_ObjectHideFlags: 0

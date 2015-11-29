@@ -9,7 +9,6 @@ public class Hull : MonoBehaviour
 	#region Editor public fields
 
 	public bool FlatShadedVertices = false;
-	public bool RunOnSeparateThread = false;
 
 	#endregion
 
@@ -32,13 +31,21 @@ public class Hull : MonoBehaviour
 //		new Vector2(1f, 1f)
 //	};
 
+	// Inner loop collection allocation
+	private List<Triangle> trianglesToProcess = new List<Triangle>();
+	private List<TrianglePoint> pointsFacingCurrentTriangle = new List<TrianglePoint>();
+	private HashSet<TrianglePoint> pointsFromRemovedTriangles = new HashSet<TrianglePoint>();
+	private List<TrianglePoint> danglingPoints = new List<TrianglePoint>();
+	private HashSet<TrianglePoint> hullPoints = new HashSet<TrianglePoint>();
+	private List<Triangle> newTriangles = new List<Triangle>();
+
 	#endregion
 
 	#region Unity methods
 
 	void Start()
 	{
-		GetComponent<Mirror>().MirroredPoints.Subscribe(points => HullCalculation(points)).AddTo(this);
+		GetComponent<Mirror>().MirroredPoints.Subscribe(points => hulled.OnNext(CalculateConvexHull(points))).AddTo(this);
 
 		var cloudGenerator = GetComponent<CloudGenerator>();
 		pointLifetimeSeconds = cloudGenerator.InitialBatches * cloudGenerator.NewBatchInterval;
@@ -151,19 +158,6 @@ public class Hull : MonoBehaviour
 		}
 	}
 
-	private void HullCalculation(List<Point> points)
-	{
-		if (RunOnSeparateThread)
-		{
-			// Perform QuickHull on a separate thread, then return back on main with the results
-			Observable.Start(() => CalculateConvexHull(points)).ObserveOnMainThread().Subscribe(hulled.OnNext).AddTo(this);
-		}
-		else
-		{
-			hulled.OnNext(CalculateConvexHull(points));
-		}
-	}
-
 	private PartialMesh CalculateConvexHull(List<Point> points)
 	{
 		if (points.Count < 4) throw new System.ArgumentException("Hull can be calculated for 4 or more points, received " + points.Count);
@@ -220,7 +214,16 @@ public class Hull : MonoBehaviour
 		if (baseTriangle.IsFacingPoint(yMax)) baseTriangle.Reverse();
 		hullTriangles.Add(baseTriangle);
 
-		var trianglesToProcess = new List<Triangle>(hullTriangles);
+		// Clear all inner loop collections
+		trianglesToProcess.Clear();
+		pointsFacingCurrentTriangle.Clear();
+		pointsFromRemovedTriangles.Clear();
+		danglingPoints.Clear();
+		hullPoints.Clear();
+		newTriangles.Clear();
+
+		trianglesToProcess.AddRange(hullTriangles);
+
 		while (remainingPoints.Count > 0 && trianglesToProcess.Count > 0)
 		{
 			var currentTriangle = trianglesToProcess[0];
@@ -229,7 +232,7 @@ public class Hull : MonoBehaviour
 			// Find the point furthest away from the triangle
 			TrianglePoint furthestPoint = null;
 			var maxDistance = float.MinValue;
-			var pointsFacingCurrentTriangle = new List<TrianglePoint>();
+			pointsFacingCurrentTriangle.Clear();
 			foreach (var point in remainingPoints)
 			{
 				if (currentTriangle.IsFacingPoint(point))
@@ -252,7 +255,7 @@ public class Hull : MonoBehaviour
 				// Remove all triangles which are facing this point
 				var seers = new List<Triangle>();
 				foreach (var triangle in hullTriangles) if (triangle.IsFacingPoint(furthestPoint)) seers.Add(triangle);
-				var pointsFromRemovedTriangles = new HashSet<TrianglePoint>();
+				pointsFromRemovedTriangles.Clear();
 				foreach (var triangleToBeRemoved in seers)
 				{
 					hullTriangles.Remove(triangleToBeRemoved);
@@ -263,15 +266,17 @@ public class Hull : MonoBehaviour
 
 				// Find points from deleted triangles which are left without any triangle and delete them, as they will be inside the hull
 				// after the new triangles are added
-				var danglingPoints = new List<TrianglePoint>();
+				danglingPoints.Clear();
 				foreach (var point in pointsFromRemovedTriangles) if (point.Triangles.Count() == 0) danglingPoints.Add(point);
 				pointsFromRemovedTriangles.ExceptWith(danglingPoints);
 
 				// Sew the hole that has come up when removing the triangle(s) by attaching furthestPoint to hole edges
-				var newTriangles = SewPointToHoleEdges(furthestPoint, pointsFromRemovedTriangles);
+				newTriangles.Clear();
+				SewPointToHoleEdges(furthestPoint, pointsFromRemovedTriangles, newTriangles);
 
 				// Check orientation of added triangles (if the triangle can see any hull point, reverse it)
-				var hullPoints = new HashSet<TrianglePoint>(hullTriangles.SelectMany(t => t.Points));
+				hullPoints.Clear();
+				hullPoints.UnionWith(hullTriangles.SelectMany(t => t.Points));
 				var hullCenter = hullPoints.Select(p => p.Position).Aggregate(Vector3.zero, (acc, p) => acc + p);
 				hullCenter /= hullPoints.Count;
 				foreach (var newTriangle in newTriangles) if (newTriangle.IsFacingPosition(hullCenter)) newTriangle.Reverse();
@@ -300,10 +305,8 @@ public class Hull : MonoBehaviour
 		return TrianglesToPartialMesh(hullTriangles);
 	}
 
-	private List<Triangle> SewPointToHoleEdges(TrianglePoint topPoint, IEnumerable<TrianglePoint> edgePoints)
+	private void SewPointToHoleEdges(TrianglePoint topPoint, IEnumerable<TrianglePoint> edgePoints, List<Triangle> listToFill)
 	{
-		var triangles = new List<Triangle>();
-
 		var startPoint = edgePoints.ElementAt(0);
 		var currentPoint = startPoint;
 		TrianglePoint previousPoint = null;
@@ -324,9 +327,7 @@ public class Hull : MonoBehaviour
 		}
 		while (nextPoint != startPoint);
 
-		foreach (var triple in futureTriangles) triangles.Add(new Triangle(triple));
-
-		return triangles;
+		foreach (var triple in futureTriangles) listToFill.Add(new Triangle(triple));
 	}
 
 	private PartialMesh TrianglesToPartialMesh(List<Triangle> triangles)
