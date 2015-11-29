@@ -8,6 +8,7 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 	#region Editor public fields
 
 	public int ScreenshotScale = 2;
+	public GameObject AskPermissionsOverlayPrefab;
 	public GameObject SaveOverlayPrefab;
 
 	#endregion
@@ -18,6 +19,7 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 	#region Private fields
 
 	private StringInput stringInputComponent;
+	private PhotosPermissionDialog photosPermissionDialog;
 
 	#endregion
 
@@ -57,13 +59,31 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 			else
 			{
 				// Present a friendly dialog letting the user know he's about to surrender the rights for writing to the Photo Stream
-				// FIXME: Implement.
-				AskPermissions();
+				AskForPermissions();
 			}
 			#elif UNITY_EDITOR
 			StartCoroutine(CaptureScreenshot());
 			#endif
 		}
+	}
+
+	#endregion
+
+	#region Ask for permissions
+
+	private void AskForPermissions()
+	{
+		var askPermissionsOverlay = Instantiate(AskPermissionsOverlayPrefab);
+		askPermissionsOverlay.transform.SetParent(FindObjectOfType<Canvas>().transform, false);
+
+		photosPermissionDialog = askPermissionsOverlay.GetComponentInChildren<PhotosPermissionDialog>();
+		photosPermissionDialog.OnConfirm += PhotosPermissionDialogOnConfirm;
+	}
+
+	void PhotosPermissionDialogOnConfirm()
+	{
+		AskPermissions();
+		photosPermissionDialog.OnConfirm -= PhotosPermissionDialogOnConfirm;
 	}
 
 	#endregion

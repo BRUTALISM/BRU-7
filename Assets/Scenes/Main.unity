@@ -1045,6 +1045,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ScreenshotScale: 2
+  AskPermissionsOverlayPrefab: {fileID: 134864, guid: 990a704ecf6d14d83838d865557e890c,
+    type: 2}
   SaveOverlayPrefab: {fileID: 129978, guid: c9ed7fb1aa4d54903a17014de250a233, type: 2}
 --- !u!114 &903805387
 MonoBehaviour:
