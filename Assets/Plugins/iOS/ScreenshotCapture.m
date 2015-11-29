@@ -22,7 +22,11 @@ void SaveScreenshotToAlbum(const char* path)
         [PHAssetChangeRequest creationRequestForAssetFromImage:image];
     } completionHandler:^(BOOL success, NSError * _Nullable error)
     {
-        if (success) NSLog(@"SAVED!");
+        if (success)
+        {
+            NSLog(@"SAVED!");
+            UnitySendMessage("Event Catcher Panel", "NativeCodeFinishedSave", "");
+        }
         else
         {
             NSLog(@"%@", error.description);

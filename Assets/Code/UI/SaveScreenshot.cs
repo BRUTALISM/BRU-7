@@ -34,6 +34,9 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 	[DllImport("__Internal")]
 	private static extern void SaveScreenshotToAlbum(string path);
 
+	private bool saving = false;
+	private GameObject saveOverlay;
+
 	#endregion
 
 	#region Unity methods
@@ -49,7 +52,7 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 
 	public void OnPointerUp(PointerEventData eventData)
 	{
-		if (!eventData.dragging)
+		if (!saving && !eventData.dragging)
 		{
 			#if UNITY_IOS && !UNITY_EDITOR
 			if (CheckPermissions())
@@ -92,7 +95,9 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 
 	private System.Collections.IEnumerator CaptureScreenshot()
 	{
-		var saveOverlay = Instantiate(SaveOverlayPrefab);
+		saving = true;
+
+		saveOverlay = Instantiate(SaveOverlayPrefab);
 
 		yield return new WaitForSeconds(0.1f);
 
@@ -123,12 +128,22 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 
 		Debug.LogFormat("Saved screenshot to: {0}", filename);
 
-		Destroy(saveOverlay);
+		#if UNITY_EDITOR
+		NativeCodeFinishedSave("");
+		#endif
 	}
 
 	private string GetTimestamp()
 	{
 		return System.DateTime.Now.Ticks.ToString();
+	}
+
+	public void NativeCodeFinishedSave(string message)
+	{
+		Debug.Log("Save finished.");
+
+		Destroy(saveOverlay);
+		saving = false;
 	}
 
 	#endregion
