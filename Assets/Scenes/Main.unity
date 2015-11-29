@@ -181,7 +181,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FlatShadedVertices: 1
-  RunOnSeparateThread: 0
 --- !u!114 &17091705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -876,7 +875,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FlatShadedVertices: 1
-  RunOnSeparateThread: 0
 --- !u!114 &891532192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1348,7 +1346,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FlatShadedVertices: 1
-  RunOnSeparateThread: 0
 --- !u!114 &1368822828
 MonoBehaviour:
   m_ObjectHideFlags: 0
