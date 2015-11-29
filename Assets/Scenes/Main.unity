@@ -1287,7 +1287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de25d8d8e02ac4707873ef07425ba086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SeedWhenEmpty: 7
+  SeedWhenEmpty: 948660091
   ThrottlingInterval: .5
 --- !u!4 &1215265778
 Transform:
