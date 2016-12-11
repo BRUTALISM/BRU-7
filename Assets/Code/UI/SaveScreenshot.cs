@@ -65,7 +65,7 @@ public class SaveScreenshot : MonoBehaviour, IPointerUpHandler
 				AskForPermissions();
 			}
 			#elif UNITY_EDITOR
-			StartCoroutine(CaptureScreenshot());
+			//StartCoroutine(CaptureScreenshot());
 			#endif
 		}
 	}

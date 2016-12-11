@@ -72,7 +72,6 @@ public class Orbit : MonoBehaviour
 
 	void Update()
 	{
-		#if UNITY_EDITOR
 		const float KeyboardRotationPerFrame = 2f;
 		const float DistanceZoomPerFrame = 2f;
 		if (Input.GetKey(KeyCode.LeftArrow)) rotationOffset *= Quaternion.Euler(0f, -KeyboardRotationPerFrame, 0f);
@@ -82,7 +81,6 @@ public class Orbit : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.R)) rotationOffset = Quaternion.identity;
 		if (Input.GetKey(KeyCode.Equals)) DistanceFromOrigin -= DistanceZoomPerFrame;
 		if (Input.GetKey(KeyCode.Minus)) DistanceFromOrigin += DistanceZoomPerFrame;
-		#endif
 
 		var gyroRotation = rotationOffset * ConvertRotation(Input.gyro.attitude);
 
