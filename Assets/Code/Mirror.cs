@@ -4,8 +4,13 @@ using UniRx;
 
 public class Mirror : MonoBehaviour
 {
+	public enum ImperfectionSide { Left, Right, Both }
+
 	#region Editor public fields
-	// TODO: Symmetry imperfections.
+
+	public ImperfectionSide imperfectionSide = ImperfectionSide.Left;
+	public float imperfectionMagnitude = 0;
+
 	#endregion
 
 	#region Public properties
@@ -45,6 +50,28 @@ public class Mirror : MonoBehaviour
 			else if (mirrorAxis == CloudGenerator.Axis.YZ) position.x *= -1;
 
 			mirrored.Add(new Point(position, point.Weight));
+		}
+
+		// Apply imperfection offset
+		for (int i = 0; i < points.Count; i++) {
+			var offset = new Vector3(Random.value * imperfectionMagnitude,
+			                         Random.value * imperfectionMagnitude,
+			                         Random.value * imperfectionMagnitude);
+			switch (imperfectionSide)
+			{
+				case ImperfectionSide.Left:
+				mirrored[i].Position += offset;
+				break;
+
+				case ImperfectionSide.Right:
+				points[i].Position += offset;
+				break;
+
+				case ImperfectionSide.Both:
+				var pointToOffset = Random.value < 0.5 ? points[i] : mirrored[i];
+				pointToOffset.Position += offset;
+				break;
+			}
 		}
 
 		// Publish both

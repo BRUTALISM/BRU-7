@@ -200,6 +200,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d49389cd9154d26880b71acad836ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imperfectionSide: 0
+  imperfectionMagnitude: 0
 --- !u!114 &17091706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,7 +406,7 @@ MonoBehaviour:
     LightnessDarkAffinityMean: 0.1
     LightnessLightAffinityMean: 0.6
     LightnessAffinityStandardDeviation: 0.05
-    DerivationSourceAffinity: 3
+    DerivationSourceAffinity: 2
     DerivationSourceAffinityIntensity: 0.9
     HueWanderMax: 0.1
     SaturationWanderMax: 0.5
@@ -844,10 +846,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SeedGenerator: {fileID: 1215265777}
   AxisOfSymmetry: 2
-  InitialBatches: 40
-  PointsPerBatch: 7
+  InitialBatches: 60
+  PointsPerBatch: 6
   NewBatchInterval: 0.33
-  Extent: 50
+  Extent: 40
   MaxDistanceToPreviousBatch: 4
   DistanceToPreviousBatchScale: {x: 1, y: 0.5, z: 1}
   MaxDistanceToPreviousPoint: 4
@@ -895,6 +897,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d49389cd9154d26880b71acad836ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imperfectionSide: 1
+  imperfectionMagnitude: 8
 --- !u!114 &891532190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1423,6 +1427,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29d49389cd9154d26880b71acad836ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imperfectionSide: 1
+  imperfectionMagnitude: 0.5
 --- !u!114 &1368822830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1454,8 +1460,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SeedGenerator: {fileID: 1215265777}
   AxisOfSymmetry: 2
-  InitialBatches: 40
-  PointsPerBatch: 7
+  InitialBatches: 30
+  PointsPerBatch: 5
   NewBatchInterval: 0.25
   Extent: 10
   MaxDistanceToPreviousBatch: 6
@@ -1470,7 +1476,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1368822825}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2137345162}
@@ -1983,7 +1989,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2137345161}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 891532187}

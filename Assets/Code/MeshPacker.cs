@@ -35,7 +35,7 @@ public class MeshPacker : MonoBehaviour
 	{
 		GetComponent<Hull>().HulledPartialMeshes.Subscribe(PackMesh).AddTo(this);
 
-		meshesPerSculpture = GetComponent<CloudGenerator>().InitialBatches * 2;
+		meshesPerSculpture = GetComponent<CloudGenerator>().InitialBatches;
 	}
 
 	#endregion
