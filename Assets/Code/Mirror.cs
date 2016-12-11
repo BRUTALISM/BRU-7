@@ -5,6 +5,7 @@ using UniRx;
 public class Mirror : MonoBehaviour
 {
 	#region Editor public fields
+	// TODO: Symmetry imperfections.
 	#endregion
 
 	#region Public properties

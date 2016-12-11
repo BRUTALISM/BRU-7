@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshesPerPack: 2
 --- !u!114 &17091704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,14 +397,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SeedGenerator: {fileID: 1215265777}
   PaletteGeneratorParameters:
-    PrimaryColorMethod: 4
-    LightnessAffinity: 0
-    PrimaryColorCount: 4
+    PrimaryColorMethod: 2
+    LightnessAffinity: 2
+    PrimaryColorCount: 3
     AnalogousHueAngleIncrement: 10
-    LightnessDarkAffinityMean: 0.2
+    LightnessDarkAffinityMean: 0.1
     LightnessLightAffinityMean: 0.6
-    LightnessAffinityStandardDeviation: 0.1
-    DerivationSourceAffinity: 2
+    LightnessAffinityStandardDeviation: 0.05
+    DerivationSourceAffinity: 3
     DerivationSourceAffinityIntensity: 0.9
     HueWanderMax: 0.1
     SaturationWanderMax: 0.5
@@ -844,9 +845,9 @@ MonoBehaviour:
   SeedGenerator: {fileID: 1215265777}
   AxisOfSymmetry: 2
   InitialBatches: 40
-  PointsPerBatch: 5
-  NewBatchInterval: 0.1
-  Extent: 25
+  PointsPerBatch: 7
+  NewBatchInterval: 0.33
+  Extent: 50
   MaxDistanceToPreviousBatch: 4
   DistanceToPreviousBatchScale: {x: 1, y: 0.5, z: 1}
   MaxDistanceToPreviousPoint: 4
@@ -905,6 +906,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshesPerPack: 2
 --- !u!114 &891532191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -930,7 +932,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MeshMaterial: {fileID: 2100000, guid: 56a13fc88a4a8469799b13f55181f3ad, type: 2}
   MaterialColorProperty: _Color
-  ColorAlpha: 0.9
+  ColorAlpha: 1
 --- !u!1 &899595870
 GameObject:
   m_ObjectHideFlags: 0
@@ -1166,7 +1168,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.16176468, g: 0.16176468, b: 0.16176468, a: 0.019607844}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -1216,7 +1218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5b61836a513d4fea91294042264a1cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RotationLerpFactor: 0.5
+  RotationLerpFactor: 0.2
   XRotation: 1
   YRotation: 1
   ZRotation: 1
@@ -1385,6 +1387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7cfdcc122c5149c0bfaa169736eeb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshesPerPack: 2
 --- !u!114 &1368822827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1453,7 +1456,7 @@ MonoBehaviour:
   AxisOfSymmetry: 2
   InitialBatches: 40
   PointsPerBatch: 7
-  NewBatchInterval: 0.1
+  NewBatchInterval: 0.25
   Extent: 10
   MaxDistanceToPreviousBatch: 6
   DistanceToPreviousBatchScale: {x: 1, y: 0.2, z: 1}
@@ -1486,7 +1489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MeshMaterial: {fileID: 2100000, guid: 56a13fc88a4a8469799b13f55181f3ad, type: 2}
   MaterialColorProperty: _Color
-  ColorAlpha: 0.9
+  ColorAlpha: 1
 --- !u!1 &1588020437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,7 +1725,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1918122889
 Transform:
   m_ObjectHideFlags: 0

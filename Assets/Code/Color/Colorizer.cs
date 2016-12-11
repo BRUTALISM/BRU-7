@@ -20,26 +20,26 @@ public class Colorizer : MonoBehaviour
 	#endregion
 
 	#region Private fields
+	private InfinitePalette currentPalette;
 	#endregion
 
 	#region Unity methods
 
 	private void Start()
 	{
+		Farb.Scenestance.Palettes.Subscribe((palette) => currentPalette = palette).AddTo(this);
+
 		var meshPacker = GetComponent<MeshPacker>();
-		Farb.Scenestance.Palettes
-			.Zip(meshPacker.GeneratedChildren, (p, cs) => new { Palette = p, MeshChildren = cs })
-			.Subscribe(x => Colorize(x.Palette, x.MeshChildren))
-			.AddTo(this);
+		meshPacker.GeneratedChildren.Subscribe(Colorize).AddTo(this);
 	}
 
 	#endregion
 
 	#region Coloring
 
-	private void Colorize(InfinitePalette palette, List<GameObject> objects)
+	private void Colorize(List<GameObject> objects)
 	{
-		var colorEnumerator = palette.Colors.GetEnumerator();
+		var colorEnumerator = currentPalette.Colors.GetEnumerator();
 		foreach (var renderer in objects.Select(o => o.GetComponent<MeshRenderer>()))
 		{
 			colorEnumerator.MoveNext();

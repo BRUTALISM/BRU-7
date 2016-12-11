@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 
 public class MeshPacker : MonoBehaviour
 {
 	#region Editor public fields
+
+	public int meshesPerPack = 2;
+
 	#endregion
 
 	#region Public properties
@@ -19,9 +23,9 @@ public class MeshPacker : MonoBehaviour
 
 	private List<GameObject> children = new List<GameObject>();
 
-	private int partialMeshesInWindow = 0;
-
 	private Subject<List<GameObject>> generatedChildrenSubject = new Subject<List<GameObject>>();
+
+	private int meshesPerSculpture = 0;
 
 	#endregion
 
@@ -31,8 +35,7 @@ public class MeshPacker : MonoBehaviour
 	{
 		GetComponent<Hull>().HulledPartialMeshes.Subscribe(PackMesh).AddTo(this);
 
-		// Times 2 because of mirroring
-		partialMeshesInWindow = GetComponent<CloudGenerator>().InitialBatches * 2;
+		meshesPerSculpture = GetComponent<CloudGenerator>().InitialBatches * 2;
 	}
 
 	#endregion
@@ -43,14 +46,9 @@ public class MeshPacker : MonoBehaviour
 	{
 		partialMeshes.Add(newPartialMesh);
 
-		if (partialMeshes.Count == partialMeshesInWindow)
+		if (partialMeshes.Count >= meshesPerPack)
 		{
-			if (children != null)
-			{
-				foreach (var child in children) Destroy(child);
-				children.Clear();
-			}
-
+			var generatedChildren = new List<GameObject>();
 			for (int i = 0; i < partialMeshes.Count - 1; i += 2)
 			{
 				var meshBuilder = new MeshBuilder();
@@ -60,12 +58,21 @@ public class MeshPacker : MonoBehaviour
 				var meshes = meshBuilder.Build();
 				foreach (var mesh in meshes) mesh.RecalculateNormals();
 
-				children.AddRange(CreateChildrenForMeshes(meshes, this.gameObject));
+				generatedChildren.AddRange(CreateChildrenForMeshes(meshes, this.gameObject));
 			}
 			
 			partialMeshes.Clear();
+			children.AddRange(generatedChildren);
 
-			generatedChildrenSubject.OnNext(children);
+			// Clear old children (FIFO)
+			if (children != null && children.Count > meshesPerSculpture)
+			{
+				var toBeDestroyed = children.Take(children.Count - meshesPerSculpture);
+				foreach (var child in toBeDestroyed) Destroy(child);
+				children = children.Except(toBeDestroyed).ToList();
+			}
+
+			generatedChildrenSubject.OnNext(generatedChildren);
 		}
 	}
 
