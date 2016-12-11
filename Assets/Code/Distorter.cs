@@ -20,6 +20,8 @@ public class Distorter : MonoBehaviour
 	public int TierPointsIncrement = -1;
 	public int MaxTiers = 5;
 
+	public float WeightDecay = 1.0f;
+
 	public bool DrawGizmos = false;
 
 	#endregion
@@ -118,7 +120,7 @@ public class Distorter : MonoBehaviour
 			var currentTier = previousTier
 				.OrderBy(p => Nasum.Value)
 				.Take(nextTierPoints)
-				.Select(p => new Point(p.Position + FieldAt(p.Position), 1f / tierCount));
+				.Select(p => new Point(p.Position + FieldAt(p.Position), p.Weight * WeightDecay));
 			
 			nextBatch.AddRange(currentTier);
 			

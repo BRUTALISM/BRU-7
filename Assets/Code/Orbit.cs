@@ -74,7 +74,6 @@ public class Orbit : MonoBehaviour
 		if (Input.GetKey(KeyCode.RightArrow)) rotationOffset *= Quaternion.Euler(0f, KeyboardRotationPerFrame, 0f);
 		if (Input.GetKey(KeyCode.UpArrow)) rotationOffset *= Quaternion.Euler(-KeyboardRotationPerFrame, 0f, 0f);
 		if (Input.GetKey(KeyCode.DownArrow)) rotationOffset *= Quaternion.Euler(KeyboardRotationPerFrame, 0f, 0f);
-		if (Input.GetKeyDown(KeyCode.R)) rotationOffset = Quaternion.identity;
 		if (Input.GetKey(KeyCode.Equals)) DistanceFromOrigin -= DistanceZoomPerFrame;
 		if (Input.GetKey(KeyCode.Minus)) DistanceFromOrigin += DistanceZoomPerFrame;
 

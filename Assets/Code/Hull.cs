@@ -344,6 +344,7 @@ public class Hull : MonoBehaviour
 					partialMesh.Indices.Add(partialMesh.Vertices.Count);
 					partialMesh.Vertices.Add(point.Position);
 					partialMesh.Tangents.Add(PackTangentForPoint(point));
+					partialMesh.Colors.Add(new Color(point.Weight, point.Weight, point.Weight));
 				}
 
 //				partialMesh.UVs.AddRange(triangleUVs);
@@ -369,6 +370,7 @@ public class Hull : MonoBehaviour
 
 						partialMesh.Vertices.Add(point.Position);
 						partialMesh.Tangents.Add(PackTangentForPoint(point));
+						partialMesh.Colors.Add(new Color(point.Weight, point.Weight, point.Weight));
 					}
 
 					// TODO: UV coordinate support for non-flat shaded vertices.

@@ -151,14 +151,22 @@ public class InfinitePalette
 		public float LightnessMaxStep = 0.05f;
 
 		#endregion
+
+		#region Global parameters
+
+		[Range(0f, 1f)]
+		public float SaturationMinimum = 0f;
+
+		[Range(0f, 1f)]
+		public float SaturationMaximum = 1f;
+
+		#endregion
 	}
 
 	#region Constants
 
 	public const float HueMinimum = 0f;
 	public const float HueMaximum = 1f;
-	public const float SaturationMinimum = 0f;
-	public const float SaturationMaximum = 1f;
 	public const float LightnessBlack = 0f;
 	public const float LightnessMaximumColor = 0.5f;
 	public const float LightnessWhite = 1f;
@@ -253,7 +261,7 @@ public class InfinitePalette
 		var newColor = new HSLColor();
 		newColor.A = 1f;
 
-		var previousColor = new HSLColor(RandomHue(), RandomSaturation(), 0f, 1f);
+		var previousColor = new HSLColor(RandomHue(), Random.Range(parameters.SaturationMinimum, parameters.SaturationMaximum), 0f, 1f);
 		if (primaries.Count != 0) previousColor = primaries[primaries.Count - 1];
 
 		// Generate hue and saturation based on PrimaryColorMethod
@@ -261,7 +269,7 @@ public class InfinitePalette
 		{
 			case PrimaryColorMethod.None:
 				newColor.H = Nasum.Range(HueMinimum, HueMaximum);
-				newColor.S = RandomSaturation();
+				newColor.S = Random.Range(parameters.SaturationMinimum, parameters.SaturationMaximum);
 				break;
 			case PrimaryColorMethod.Analogous:
 				newColor.H = (previousColor.H + parameters.AnalogousHueAngleIncrement / 360f).Wrap01();
@@ -269,16 +277,16 @@ public class InfinitePalette
 				break;
 			case PrimaryColorMethod.Complementary:
 				newColor.H = (previousColor.H + 0.5f).Wrap01();
-				newColor.S = RandomSaturation();
+				newColor.S = Random.Range(parameters.SaturationMinimum, parameters.SaturationMaximum);
 				break;
 			case PrimaryColorMethod.Compound:
 				var compoundOffset = primaries.Count > 0 ? compoundColorOffsets[(primaries.Count - 1) % compoundColorOffsets.Count] : 0f;
 				newColor.H = (previousColor.H + compoundOffset).Wrap01();
-				newColor.S = RandomSaturation();
+				newColor.S = Random.Range(parameters.SaturationMinimum, parameters.SaturationMaximum);
 				break;
 			case PrimaryColorMethod.Monochromatic:
 				newColor.H = previousColor.H;
-				newColor.S = RandomSaturation();
+				newColor.S = Random.Range(parameters.SaturationMinimum, parameters.SaturationMaximum);
 				break;
 		}
 
@@ -375,12 +383,6 @@ public class InfinitePalette
 	{
 		// TODO: Parameterize this as well?
 		return Nasum.Range(HueMinimum, HueMaximum);
-	}
-
-	private float RandomSaturation()
-	{
-		// TODO: Parameterize this as well?
-		return Nasum.Range(SaturationMinimum, SaturationMaximum);
 	}
 
 	#endregion

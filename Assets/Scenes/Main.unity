@@ -130,6 +130,7 @@ MonoBehaviour:
   FieldScale: 0.0001
   TierPointsIncrement: -3
   MaxTiers: 2
+  WeightDecay: 1
   DrawGizmos: 0
 --- !u!114 &17091701
 MonoBehaviour:
@@ -415,6 +416,8 @@ MonoBehaviour:
     HueMaxStep: 0.05
     SaturationMaxStep: 0.05
     LightnessMaxStep: 0.1
+    SaturationMinimum: 0
+    SaturationMaximum: 1
 --- !u!114 &259567180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -849,8 +852,8 @@ MonoBehaviour:
   AxisOfSymmetry: 2
   InitialBatches: 60
   PointsPerBatch: 6
-  NewBatchInterval: 0.33
-  Extent: 40
+  NewBatchInterval: 1
+  Extent: 100
   MaxDistanceToPreviousBatch: 4
   DistanceToPreviousBatchScale: {x: 1, y: 0.5, z: 1}
   MaxDistanceToPreviousPoint: 4
@@ -881,12 +884,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   randomSeedGenerator: {fileID: 1215265777}
-  RandomFieldIntensity: 6
-  ConstantFieldIntensity: 12
-  ConstantFieldDirection: {x: 1, y: 1, z: 2}
+  RandomFieldIntensity: 3
+  ConstantFieldIntensity: 6
+  ConstantFieldDirection: {x: 0.2, y: 0.1, z: 1}
   FieldScale: 0.0266
   TierPointsIncrement: -1
   MaxTiers: 5
+  WeightDecay: 1
   DrawGizmos: 1
 --- !u!114 &891532189
 MonoBehaviour:
@@ -900,7 +904,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imperfectionSide: 1
-  imperfectionMagnitude: 8
+  imperfectionMagnitude: 1.6
 --- !u!114 &891532190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -936,7 +940,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de5806c747064c88bd7950d37275e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: 56a13fc88a4a8469799b13f55181f3ad, type: 2}
+  MeshMaterial: {fileID: 2100000, guid: 9757a510e981049e283815f29a98c03c, type: 2}
   MaterialColorProperty: _Color
   ColorAlpha: 1
 --- !u!1 &899595870
@@ -1445,10 +1449,11 @@ MonoBehaviour:
   randomSeedGenerator: {fileID: 1215265777}
   RandomFieldIntensity: 4
   ConstantFieldIntensity: 8
-  ConstantFieldDirection: {x: 1, y: 1, z: 2}
+  ConstantFieldDirection: {x: 0.2, y: 0.2, z: 1}
   FieldScale: 0.0266
   TierPointsIncrement: -3
   MaxTiers: 5
+  WeightDecay: 1
   DrawGizmos: 0
 --- !u!114 &1368822831
 MonoBehaviour:
@@ -1465,10 +1470,10 @@ MonoBehaviour:
   AxisOfSymmetry: 2
   InitialBatches: 30
   PointsPerBatch: 5
-  NewBatchInterval: 0.25
+  NewBatchInterval: 0.98
   Extent: 10
   MaxDistanceToPreviousBatch: 6
-  DistanceToPreviousBatchScale: {x: 1, y: 0.2, z: 1}
+  DistanceToPreviousBatchScale: {x: 1, y: 0.2, z: 0.6}
   MaxDistanceToPreviousPoint: 6
   StartingPointWeight: 1
   PointPositionAffinity: {x: 0, y: 0, z: 0.2}
@@ -1496,7 +1501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de5806c747064c88bd7950d37275e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshMaterial: {fileID: 2100000, guid: 56a13fc88a4a8469799b13f55181f3ad, type: 2}
+  MeshMaterial: {fileID: 2100000, guid: 9757a510e981049e283815f29a98c03c, type: 2}
   MaterialColorProperty: _Color
   ColorAlpha: 1
 --- !u!1 &1588020437
