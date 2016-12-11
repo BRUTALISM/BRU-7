@@ -7,6 +7,8 @@ public class Distorter : MonoBehaviour
 {
 	#region Editor public fields
 
+	public RandomSeedGenerator randomSeedGenerator;
+
 	public float RandomFieldIntensity = 10f;
 
 	public float ConstantFieldIntensity = 2f;
@@ -50,6 +52,10 @@ public class Distorter : MonoBehaviour
 			extent = cloudGenerator.Extent * 2;
 			axisOfSymmetry = cloudGenerator.AxisOfSymmetry;
 		}
+
+		RegenerateField();
+
+		randomSeedGenerator.Seeds.Subscribe((seed) => RegenerateField()).AddTo(this);
 	}
 
 	#if UNITY_EDITOR
@@ -101,8 +107,6 @@ public class Distorter : MonoBehaviour
 
 	private void AddToGroup(List<Point> pointBatch)
 	{
-		RegenerateField();
-
 		var nextBatch = new List<Point>(pointBatch);
 		var nextTierPoints = pointBatch.Count + TierPointsIncrement;
 		var tierCount = 1;
